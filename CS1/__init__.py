@@ -1039,6 +1039,16 @@ def _get_scenario_reminder_text(player: Player):
                 'This is a one-time payment you had not expected until today.'
             )
 
+    if player.uncertainty == 1:
+        uncertainty_text = (
+            'Assume that, while there is always some uncertainty in the exact timing and amount of such payments, '
+            'there is very little uncertainty in this scenario.'
+        )
+    else:
+        uncertainty_text = 'Assume there is no uncertainty in the timing or amount of the payment.'
+
+    scenario_text = scenario_text + ' ' + uncertainty_text
+
     info_text = ''
     if player.scenario_info:
         info_text = (
@@ -1077,24 +1087,30 @@ def creating_session(subsession: Subsession):
     if subsession.round_number == 1:
         # FU = Future, PR = Present; LAR, SMA, NO = Large, Small, No - respectively; I = Information
         groups = [
-            'FU_LAR', 'FU_NO',
-            'PR_LAR', 'PR_NO',
-            'FU_LAR_I', 'FU_NO_I',
-            'PR_LAR_I', 'PR_NO_I']
+            'FU_LAR_C', 'FU_NO_C', 'PR_LAR_C', 'PR_NO_C',
+            'FU_LAR_U', 'FU_NO_U', 'PR_LAR_U', 'PR_NO_U',
+            'FU_LAR_C_I', 'FU_NO_C_I', 'PR_LAR_C_I', 'PR_NO_C_I',
+            'FU_LAR_U_I', 'FU_NO_U_I', 'PR_LAR_U_I', 'PR_NO_U_I',
+        ]
 
         for i, player in enumerate(subsession.get_players()):
             assigned_group = groups[i % len(groups)]
             player.participant.vars['assigned_group'] = assigned_group
             player.assigned_group = assigned_group
-            player.future_present = 1 if player.assigned_group in ['FU_LAR', 'FU_NO', 'FU_LAR_I', 'FU_NO_I'] else 2
 
-            if player.assigned_group in ['FU_LAR', 'PR_LAR', 'FU_LAR_I', 'PR_LAR_I']:
+            player.future_present = 1 if player.assigned_group in ['FU_LAR_C', 'FU_NO_C', 'FU_LAR_U', 'FU_NO_U','FU_LAR_C_I', 'FU_NO_C_I', 'FU_LAR_U_I', 'FU_NO_U_I'] else 2
+
+            if player.assigned_group in ['FU_LAR_C', 'PR_LAR_C', 'FU_LAR_U', 'PR_LAR_U', 'FU_LAR_C_I', 'PR_LAR_C_I', 'FU_LAR_U_I', 'PR_LAR_U_I']:
                 player.emotional_attachment = 3
-            elif player.assigned_group in ['FU_NO', 'PR_NO', 'FU_NO_I', 'PR_NO_I']:
+            elif player.assigned_group in ['FU_NO_C', 'PR_NO_C', 'FU_NO_U', 'PR_NO_U', 'FU_NO_C_I', 'PR_NO_C_I', 'FU_NO_U_I', 'PR_NO_U_I']:
                 player.emotional_attachment = 1
+        
+            if player.assigned_group in ['FU_LAR_C', 'FU_NO_C', 'PR_LAR_C', 'PR_NO_C', 'FU_LAR_C_I', 'FU_NO_C_I', 'PR_LAR_C_I', 'PR_NO_C_I']:
+                player.uncertainty = 2
+            elif player.assigned_group in ['FU_LAR_U', 'FU_NO_U', 'PR_LAR_U', 'PR_NO_U', 'FU_LAR_U_I', 'FU_NO_U_I', 'PR_LAR_U_I', 'PR_NO_U_I']:
+                player.uncertainty = 1
 
-            player.scenario_info = True if player.assigned_group in ['FU_LAR_I', 'FU_NO_I',
-            'PR_LAR_I', 'PR_NO_I'] else False
+            player.scenario_info = True if player.assigned_group in ['FU_LAR_C_I', 'FU_NO_C_I', 'PR_LAR_C_I', 'PR_NO_C_I', 'FU_LAR_U_I', 'FU_NO_U_I', 'PR_LAR_U_I', 'PR_NO_U_I'] else False
 
         for p in subsession.get_players():
             # BOT SCREENING RELATED
@@ -1514,12 +1530,12 @@ def get_timeline_vars(player: Player):
     
     return payment_position,payment_label
 
-class FU_LAR(Page):
+class FU_LAR_C(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
 
     def is_displayed(player: Player):
-        return player.participant.vars.get('assigned_group') == 'FU_LAR'
+        return player.participant.vars.get('assigned_group') == 'FU_LAR_C'
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -1538,11 +1554,50 @@ class FU_LAR(Page):
     def before_next_page(player: Player, timeout_happened):
         player.mother_father = player.participant.vars['variation']
 
-class FU_NO(Page):
+class FU_LAR_U(Page):
+    form_model = 'player'
+    form_fields = ['scenario_warning']
+
+    def is_displayed(player: Player):
+        return player.participant.vars.get('assigned_group') == 'FU_LAR_U'
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        if 'variation' not in player.participant.vars:
+            player.participant.vars['variation'] = random.randint(1, 2)
+        payment_position, payment_label = get_timeline_vars(player)
+        return {
+            'testing': player.session.config["testing"],
+            'variation': player.participant.vars['variation'],
+            'scenario_warning': player.scenario_warning,
+                'payment_position':payment_position,
+                'payment_label': payment_label,
+                'arrow_left_percent': payment_position*25}
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        player.mother_father = player.participant.vars['variation']
+
+class FU_NO_C(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
     def is_displayed(player: Player):
-        return player.participant.vars.get('assigned_group') == 'FU_NO'
+        return player.participant.vars.get('assigned_group') == 'FU_NO_C'
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        payment_position, payment_label = get_timeline_vars(player)
+        return {'testing': player.session.config["testing"],
+                'scenario_warning': player.scenario_warning,
+                'payment_position':payment_position,
+                'payment_label': payment_label,
+                'arrow_left_percent': payment_position*25}
+    
+class FU_NO_U(Page):
+    form_model = 'player'
+    form_fields = ['scenario_warning']
+    def is_displayed(player: Player):
+        return player.participant.vars.get('assigned_group') == 'FU_NO_U'
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -1553,11 +1608,11 @@ class FU_NO(Page):
                 'payment_label': payment_label,
                 'arrow_left_percent': payment_position*25}
 
-class PR_LAR(Page):
+class PR_LAR_C(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
     def is_displayed(player: Player):
-        return player.participant.vars.get('assigned_group') == 'PR_LAR'
+        return player.participant.vars.get('assigned_group') == 'PR_LAR_C'
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -1576,11 +1631,49 @@ class PR_LAR(Page):
     def before_next_page(player: Player, timeout_happened):
         player.mother_father = player.participant.vars['variation']
 
-class PR_NO(Page):
+class PR_LAR_U(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
     def is_displayed(player: Player):
-        return player.participant.vars.get('assigned_group') == 'PR_NO'
+        return player.participant.vars.get('assigned_group') == 'PR_LAR_U'
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        payment_position, payment_label = get_timeline_vars(player)
+        if 'variation' not in player.participant.vars:
+            player.participant.vars['variation'] = random.randint(1, 2)
+
+        return {'testing': player.session.config["testing"],
+                'variation': player.participant.vars['variation'],
+                'scenario_warning': player.scenario_warning,
+                'payment_position':payment_position,
+                'payment_label': payment_label,
+                'arrow_left_percent': payment_position*25}
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        player.mother_father = player.participant.vars['variation']
+
+class PR_NO_C(Page):
+    form_model = 'player'
+    form_fields = ['scenario_warning']
+    def is_displayed(player: Player):
+        return player.participant.vars.get('assigned_group') == 'PR_NO_C'
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        payment_position, payment_label = get_timeline_vars(player)
+        return {'testing': player.session.config["testing"],
+                'scenario_warning': player.scenario_warning,
+                'payment_position':payment_position,
+                'payment_label': payment_label,
+                'arrow_left_percent': payment_position*25}
+    
+class PR_NO_U(Page):
+    form_model = 'player'
+    form_fields = ['scenario_warning']
+    def is_displayed(player: Player):
+        return player.participant.vars.get('assigned_group') == 'PR_NO_U'
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -1593,12 +1686,12 @@ class PR_NO(Page):
 
 
 # WITH INFORMATION PARAGRAPH AT THE START
-class FU_LAR_I(Page):
+class FU_LAR_C_I(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
 
     def is_displayed(player: Player):
-        return player.participant.vars.get('assigned_group') == 'FU_LAR_I'
+        return player.participant.vars.get('assigned_group') == 'FU_LAR_C_I'
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -1617,12 +1710,52 @@ class FU_LAR_I(Page):
     def before_next_page(player: Player, timeout_happened):
         player.mother_father = player.participant.vars['variation']
 
-class FU_NO_I(Page):
+class FU_LAR_U_I(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
 
     def is_displayed(player: Player):
-        return player.participant.vars.get('assigned_group') == 'FU_NO_I'
+        return player.participant.vars.get('assigned_group') == 'FU_LAR_U_I'
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        if 'variation' not in player.participant.vars:
+            player.participant.vars['variation'] = random.randint(1, 2)
+        payment_position, payment_label = get_timeline_vars(player)
+        return {
+            'testing': player.session.config["testing"],
+            'variation': player.participant.vars['variation'],
+            'scenario_warning': player.scenario_warning,
+                'payment_position':payment_position,
+                'payment_label': payment_label,
+                'arrow_left_percent': payment_position*25}
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        player.mother_father = player.participant.vars['variation']
+
+class FU_NO_C_I(Page):
+    form_model = 'player'
+    form_fields = ['scenario_warning']
+
+    def is_displayed(player: Player):
+        return player.participant.vars.get('assigned_group') == 'FU_NO_C_I'
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        payment_position, payment_label = get_timeline_vars(player)
+        return {'testing': player.session.config["testing"],
+                'scenario_warning': player.scenario_warning,
+                'payment_position':payment_position,
+                'payment_label': payment_label,
+                'arrow_left_percent': payment_position*25}
+    
+class FU_NO_U_I(Page):
+    form_model = 'player'
+    form_fields = ['scenario_warning']
+
+    def is_displayed(player: Player):
+        return player.participant.vars.get('assigned_group') == 'FU_NO_U_I'
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -1633,12 +1766,12 @@ class FU_NO_I(Page):
                 'payment_label': payment_label,
                 'arrow_left_percent': payment_position*25}
 
-class PR_LAR_I(Page):
+class PR_LAR_C_I(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
 
     def is_displayed(player: Player):
-        return player.participant.vars.get('assigned_group') == 'PR_LAR_I'
+        return player.participant.vars.get('assigned_group') == 'PR_LAR_C_I'
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -1656,12 +1789,35 @@ class PR_LAR_I(Page):
     def before_next_page(player: Player, timeout_happened):
         player.mother_father = player.participant.vars['variation']
 
-class PR_NO_I(Page):
+class PR_LAR_U_I(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
 
     def is_displayed(player: Player):
-        return player.participant.vars.get('assigned_group') == 'PR_NO_I'
+        return player.participant.vars.get('assigned_group') == 'PR_LAR_U_I'
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        if 'variation' not in player.participant.vars:
+            player.participant.vars['variation'] = random.randint(1, 2)
+        payment_position, payment_label = get_timeline_vars(player)
+        return {'testing': player.session.config["testing"],
+                'variation': player.participant.vars['variation'],
+                'scenario_warning': player.scenario_warning,
+                'payment_position':payment_position,
+                'payment_label': payment_label,
+                'arrow_left_percent': payment_position*25}
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        player.mother_father = player.participant.vars['variation']
+
+class PR_NO_C_I(Page):
+    form_model = 'player'
+    form_fields = ['scenario_warning']
+
+    def is_displayed(player: Player):
+        return player.participant.vars.get('assigned_group') == 'PR_NO_C_I'
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -1673,6 +1829,22 @@ class PR_NO_I(Page):
                 'arrow_left_percent': payment_position*25
                 }
 
+class PR_NO_U_I(Page):
+    form_model = 'player'
+    form_fields = ['scenario_warning']
+
+    def is_displayed(player: Player):
+        return player.participant.vars.get('assigned_group') == 'PR_NO_U_I'
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        payment_position, payment_label = get_timeline_vars(player)
+        return {'testing': player.session.config["testing"],
+                'scenario_warning': player.scenario_warning,
+                'payment_position':payment_position,
+                'payment_label': payment_label,
+                'arrow_left_percent': payment_position*25
+                }
 
 class ComprehensionTest(Page):
     form_model = 'player'
@@ -2145,11 +2317,11 @@ page_sequence = [
 
     Survey_1, Survey_3, PreScenario_Demographics,
 
-    FU_LAR, FU_NO,
-    PR_LAR, PR_NO,
+    FU_LAR_C, FU_NO_C, PR_LAR_C, PR_NO_C,
+    FU_LAR_U, FU_NO_U, PR_LAR_U, PR_NO_U,
 
-    FU_LAR_I, FU_NO_I,
-    PR_LAR_I, PR_NO_I,
+    FU_LAR_C_I, FU_NO_C_I, PR_LAR_C_I, PR_NO_C_I,
+    FU_LAR_U_I, FU_NO_U_I, PR_LAR_U_I, PR_NO_U_I,
 
     ComprehensionTest,
 

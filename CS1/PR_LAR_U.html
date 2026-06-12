@@ -1,30 +1,26 @@
 {{ block title }}
     <strong>The Scenario</strong>
 {{ endblock }}
+
 {{ block content }}
     <input type="hidden" name="scenario_warning" id="scenario_warning" value="{{ scenario_warning }}">
     <div style="border: 1px solid #ccc; padding: 5px; border-radius: 5px; background-color: #d0e8ff; font-size: 16px; padding-left:15px; padding-right:15px; padding-top:1rem; padding-bottom:1rem">
     {% if variation == 1 %}
-    Suppose that today you learn that your mother has been diagnosed with a terminal disease.
-    You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> after taxes from your mother in 2 years.
-    This is a one-time payment you had not expected until today.
+    Suppose that today you learn that your mother passed away last night. You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span>
+    after taxes from your mother today. This is a one-time payment you had not expected until today.
     {% endif %}
 
     {% if variation == 2 %}
-    Suppose that today you learn that your father has been diagnosed with a terminal disease.
-    You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> after taxes from your father in 2 years.
-    This is a one-time payment you had not expected until today.
+    Suppose that today you learn that your father passed away last night. You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span>
+    after taxes from your father today. This is a one-time payment you had not expected until today.
     {% endif %}
     <br>
-    {% include "CS1/partials/timeline.html" %}
-    </div> <br>
-
-    <div style="border: 1px solid #ccc; padding: 5px; border-radius: 5px; background-color: #d0e8ff; font-size: 16px; padding-left:15px; padding-right:15px; padding-top:1rem; padding-bottom:1rem">
-        Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
-        However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
-        If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
-        </div>
     
+    <br>
+    Assume that, while there is always some uncertainty in the exact timing and amount of such payments, there is very little uncertainty in this scenario.
+    {% include "CS1/partials/timeline.html" %}
+    </div>
+
     <!-- Custom alert that appears if Next is pressed within 10 seconds -->
     <div id="quick-alert"
          class="alert alert-danger"
@@ -39,7 +35,7 @@
         <!-- replace {{ next_button }} with a custom button -->
         <button id="nextBtn" class="btn btn-primary" type="button">Next</button>
     </div>
-{% endblock %}
+{{ endblock }}
 
 {% block scripts %}
 <script>
@@ -63,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
     nextBtn.addEventListener("click", function() {
         const timeSpent = (Date.now() - pageLoadTime) / 1000;
 
-        // if it's been under 10s and not yet confirmed, show alert
+        // if it’s been under 10s and not yet confirmed, show alert
         if (!warningConfirmed && timeSpent < 10) {
             hiddenInput.value = "1";
             quickAlert.style.display = "block";

@@ -33,13 +33,13 @@
 {% endblock %}
 
 
-{% block content %}
+{{ block content }}
 <div style="font-size:18px"><br>Reminder about the scenario:<br></div>
 <br>
 <div class="container bg-light border custom-border" style="padding-left:30px; padding-right:30px; padding-top:1rem; padding-bottom:1rem">
     <strong>The Scenario</strong><br><br>
 
-    {% if group == 'FU_LAR' %}
+    {% if group == 'FU_LAR_C' %}
         {% if variation == 1 %}
             Suppose that today you learn that your mother has been diagnosed with a terminal disease.
             You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> after taxes from your mother in 2 years.
@@ -50,15 +50,10 @@
             You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> after taxes from your father in 2 years.
             This is a one-time payment you had not expected until today.
         {% endif %}
+        <br><br>Assume there is no uncertainty in the timing or amount of the payment.
     {% endif %}
 
-    {% if group == 'FU_NO' %}
-        Suppose that today you learn that the government has discovered an error in your taxes that concerns multiple years.
-        You receive a <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> refund in 2 years.
-        This is a one-time payment you had not expected until today.
-    {% endif %}
-
-    {% if group == 'FU_LAR_I' %}
+    {% if group == 'FU_LAR_U' %}
         {% if variation == 1 %}
             Suppose that today you learn that your mother has been diagnosed with a terminal disease.
             You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> after taxes from your mother in 2 years.
@@ -69,23 +64,82 @@
             You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> after taxes from your father in 2 years.
             This is a one-time payment you had not expected until today.
         {% endif %}
-        <br> <br>
-        Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
-        However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
-        If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
+        <br><br>Assume that, while there is always some uncertainty in the exact timing and amount of such payments, there is very little uncertainty in this scenario.
     {% endif %}
 
-    {% if group == 'FU_NO_I' %}
+    {% if group == 'FU_NO_C' %}
         Suppose that today you learn that the government has discovered an error in your taxes that concerns multiple years.
         You receive a <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> refund in 2 years.
         This is a one-time payment you had not expected until today.
-        <br> <br>
+        <br><br>Assume there is no uncertainty in the timing or amount of the payment.
+    {% endif %}
+
+    {% if group == 'FU_NO_U' %}
+        Suppose that today you learn that the government has discovered an error in your taxes that concerns multiple years.
+        You receive a <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> refund in 2 years.
+        This is a one-time payment you had not expected until today.
+        <br><br>Assume that, while there is always some uncertainty in the exact timing and amount of such payments, there is very little uncertainty in this scenario.
+    {% endif %}
+
+    {% if group == 'FU_LAR_C_I' %}
+        {% if variation == 1 %}
+            Suppose that today you learn that your mother has been diagnosed with a terminal disease.
+            You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> after taxes from your mother in 2 years.
+            This is a one-time payment you had not expected until today.
+        {% endif %}
+        {% if variation == 2 %}
+            Suppose that today you learn that your father has been diagnosed with a terminal disease.
+            You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> after taxes from your father in 2 years.
+            This is a one-time payment you had not expected until today.
+        {% endif %}
+        <br><br>Assume there is no uncertainty in the timing or amount of the payment.
+        <br><br>
         Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
         However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
         If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
     {% endif %}
 
-    {% if group == 'PR_LAR' %}
+    {% if group == 'FU_LAR_U_I' %}
+        {% if variation == 1 %}
+            Suppose that today you learn that your mother has been diagnosed with a terminal disease.
+            You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> after taxes from your mother in 2 years.
+            This is a one-time payment you had not expected until today.
+        {% endif %}
+        {% if variation == 2 %}
+            Suppose that today you learn that your father has been diagnosed with a terminal disease.
+            You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> after taxes from your father in 2 years.
+            This is a one-time payment you had not expected until today.
+        {% endif %}
+        <br><br>Assume that, while there is always some uncertainty in the exact timing and amount of such payments, there is very little uncertainty in this scenario.
+        <br><br>
+        Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
+        However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
+        If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
+    {% endif %}
+
+    {% if group == 'FU_NO_C_I' %}
+        Suppose that today you learn that the government has discovered an error in your taxes that concerns multiple years.
+        You receive a <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> refund in 2 years.
+        This is a one-time payment you had not expected until today.
+        <br><br>Assume there is no uncertainty in the timing or amount of the payment.
+        <br><br>
+        Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
+        However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
+        If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
+    {% endif %}
+
+    {% if group == 'FU_NO_U_I' %}
+        Suppose that today you learn that the government has discovered an error in your taxes that concerns multiple years.
+        You receive a <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> refund in 2 years.
+        This is a one-time payment you had not expected until today.
+        <br><br>Assume that, while there is always some uncertainty in the exact timing and amount of such payments, there is very little uncertainty in this scenario.
+        <br><br>
+        Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
+        However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
+        If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
+    {% endif %}
+
+    {% if group == 'PR_LAR_C' %}
         {% if variation == 1 %}
             Suppose that today you learn that your mother passed away last night. You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span>
             after taxes from your mother today. This is a one-time payment you had not expected until today.
@@ -94,14 +148,10 @@
             Suppose that today you learn that your father passed away last night. You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span>
             after taxes from your father today. This is a one-time payment you had not expected until today.
         {% endif %}
+        <br><br>Assume there is no uncertainty in the timing or amount of the payment.
     {% endif %}
 
-    {% if group == 'PR_NO' %}
-        Suppose that today you learn that the government has discovered an error in your taxes that concerns multiple years.
-        You receive a <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> refund today. This is a one-time payment you had not expected until today.
-    {% endif %}
-
-    {% if group == 'PR_LAR_I' %}
+    {% if group == 'PR_LAR_U' %}
         {% if variation == 1 %}
             Suppose that today you learn that your mother passed away last night. You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span>
             after taxes from your mother today. This is a one-time payment you had not expected until today.
@@ -110,25 +160,77 @@
             Suppose that today you learn that your father passed away last night. You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span>
             after taxes from your father today. This is a one-time payment you had not expected until today.
         {% endif %}
-        <br> <br>
+        <br><br>Assume that, while there is always some uncertainty in the exact timing and amount of such payments, there is very little uncertainty in this scenario.
+    {% endif %}
+
+    {% if group == 'PR_NO_C' %}
+        Suppose that today you learn that the government has discovered an error in your taxes that concerns multiple years.
+        You receive a <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> refund today. This is a one-time payment you had not expected until today.
+        <br><br>Assume there is no uncertainty in the timing or amount of the payment.
+    {% endif %}
+
+    {% if group == 'PR_NO_U' %}
+        Suppose that today you learn that the government has discovered an error in your taxes that concerns multiple years.
+        You receive a <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> refund today. This is a one-time payment you had not expected until today.
+        <br><br>Assume that, while there is always some uncertainty in the exact timing and amount of such payments, there is very little uncertainty in this scenario.
+    {% endif %}
+
+    {% if group == 'PR_LAR_C_I' %}
+        {% if variation == 1 %}
+            Suppose that today you learn that your mother passed away last night. You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span>
+            after taxes from your mother today. This is a one-time payment you had not expected until today.
+        {% endif %}
+        {% if variation == 2 %}
+            Suppose that today you learn that your father passed away last night. You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span>
+            after taxes from your father today. This is a one-time payment you had not expected until today.
+        {% endif %}
+        <br><br>Assume there is no uncertainty in the timing or amount of the payment.
+        <br><br>
         Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
         However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
         If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
     {% endif %}
 
-    {% if group == 'PR_NO_I' %}
-        Suppose that today you learn that the government has discovered an error in your taxes that concerns multiple years.
-        You receive a <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> refund today. This is a one-time payment you had not expected until today.
-        <br> <br>
+    {% if group == 'PR_LAR_U_I' %}
+        {% if variation == 1 %}
+            Suppose that today you learn that your mother passed away last night. You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span>
+            after taxes from your mother today. This is a one-time payment you had not expected until today.
+        {% endif %}
+        {% if variation == 2 %}
+            Suppose that today you learn that your father passed away last night. You inherit <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span>
+            after taxes from your father today. This is a one-time payment you had not expected until today.
+        {% endif %}
+        <br><br>Assume that, while there is always some uncertainty in the exact timing and amount of such payments, there is very little uncertainty in this scenario.
+        <br><br>
         Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
         However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
         If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
     {% endif %}
+
+    {% if group == 'PR_NO_C_I' %}
+        Suppose that today you learn that the government has discovered an error in your taxes that concerns multiple years.
+        You receive a <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> refund today. This is a one-time payment you had not expected until today.
+        <br><br>Assume there is no uncertainty in the timing or amount of the payment.
+        <br><br>
+        Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
+        However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
+        If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
+    {% endif %}
+
+    {% if group == 'PR_NO_U_I' %}
+        Suppose that today you learn that the government has discovered an error in your taxes that concerns multiple years.
+        You receive a <span style="white-space: nowrap;">{{ C.DEFAULT_CURRENCY_SYMBOL }}50 000</span> refund today. This is a one-time payment you had not expected until today.
+        <br><br>Assume that, while there is always some uncertainty in the exact timing and amount of such payments, there is very little uncertainty in this scenario.
+        <br><br>
+        Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
+        However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
+        If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
+    {% endif %}
+
     <br>
     {% include "CS1/partials/timeline.html" %}
 
 </div>
-<br>
 
 <strong>
     Now consider ways in which you would react to this additional income, compared to the situation without the payment.
