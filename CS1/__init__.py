@@ -1971,6 +1971,7 @@ class Reactions_2(Page):
         return {'testing': player.session.config["testing"],
                 'group': player.participant.vars['assigned_group'],
                 'variation': player.participant.vars['variation'],
+                'info_subtype': player.info_subtype,
                 'payment_position':payment_position,
                 'payment_label': payment_label,
                 'arrow_left_percent': payment_position*25}
@@ -2000,6 +2001,7 @@ class Reactions_3(Page):
         return {'testing': player.session.config["testing"],
                 'group': player.participant.vars['assigned_group'],
                 'variation': player.participant.vars['variation'],
+                'info_subtype': player.info_subtype,
                 'payment_position':payment_position,
                 'payment_label': payment_label,
                 'arrow_left_percent': payment_position*25}
@@ -2068,6 +2070,7 @@ class Reactions_5(Page):
         return {'testing': player.session.config["testing"],
                 'group': player.participant.vars['assigned_group'],
                 'variation': player.participant.vars['variation'],
+                'info_subtype': player.info_subtype,
                 'payment_position':payment_position,
                 'payment_label': payment_label,
                 'arrow_left_percent': payment_position*25,
@@ -2148,6 +2151,7 @@ class Reactions_7(Page):
         return {'testing': player.session.config["testing"],
                 'group': player.participant.vars['assigned_group'],
                 'variation': player.participant.vars['variation'],
+                'info_subtype': player.info_subtype,
                 'payment_position':payment_position,
                 'payment_label': payment_label,
                 'arrow_left_percent': payment_position*25}
@@ -2187,6 +2191,7 @@ class Reactions_9(Page):
     def vars_for_template(player: Player):
         return {
             'testing': player.session.config["testing"],
+            'info_subtype': player.info_subtype,
             'emotional_attachment': player.emotional_attachment}
 
     @staticmethod
@@ -2215,6 +2220,7 @@ class Reactions_8(Page):
             'testing': player.session.config["testing"],
             'group': player.participant.vars['assigned_group'],
             'variation': player.participant.vars['variation'],
+            'info_subtype': player.info_subtype,
             'payment_position': payment_position,
             'payment_label': payment_label,
             'arrow_left_percent': payment_position * 25,
@@ -2240,6 +2246,7 @@ class Reactions_6(Page):
             'testing': player.session.config["testing"],
             'group': player.participant.vars['assigned_group'],
             'variation': player.participant.vars['variation'],
+            'info_subtype': player.info_subtype,
             'payment_position': payment_position,
             'payment_label': payment_label,
             'arrow_left_percent': payment_position * 25,

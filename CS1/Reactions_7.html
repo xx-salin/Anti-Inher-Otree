@@ -2,6 +2,9 @@
     Reactions to the Scenario - 5
 {{ endblock }}
 
+
+
+
 {{ block content }}
 <div style="font-size:18px"><br>Reminder about the scenario:<br></div>
 <br>
@@ -66,6 +69,21 @@
         Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
         However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
         If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
+        {% if '5' in info_subtype and '6' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income, your net wealth (e.g., savings invested in bank accounts or stocks) and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype and '6' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income and your net wealth (e.g., savings invested in bank accounts or stocks). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '6' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your net wealth (e.g., savings invested in bank accounts or stocks) and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income. That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '6' in info_subtype %}
+            You stated that you would be able to spend more today by using your net wealth (e.g., savings invested in bank accounts or stocks). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '7' in info_subtype %}
+            You stated that you would be able to spend more today by borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% endif %}
     {% endif %}
 
     {% if group == 'FU_LAR_U_I' %}
@@ -84,6 +102,21 @@
         Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
         However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
         If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
+        {% if '5' in info_subtype and '6' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income, your net wealth (e.g., savings invested in bank accounts or stocks) and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype and '6' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income and your net wealth (e.g., savings invested in bank accounts or stocks). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '6' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your net wealth (e.g., savings invested in bank accounts or stocks) and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income. That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '6' in info_subtype %}
+            You stated that you would be able to spend more today by using your net wealth (e.g., savings invested in bank accounts or stocks). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '7' in info_subtype %}
+            You stated that you would be able to spend more today by borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% endif %}
     {% endif %}
 
     {% if group == 'FU_NO_C_I' %}
@@ -95,6 +128,21 @@
         Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
         However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
         If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
+        {% if '5' in info_subtype and '6' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income, your net wealth (e.g., savings invested in bank accounts or stocks) and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype and '6' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income and your net wealth (e.g., savings invested in bank accounts or stocks). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '6' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your net wealth (e.g., savings invested in bank accounts or stocks) and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income. That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '6' in info_subtype %}
+            You stated that you would be able to spend more today by using your net wealth (e.g., savings invested in bank accounts or stocks). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '7' in info_subtype %}
+            You stated that you would be able to spend more today by borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% endif %}
     {% endif %}
 
     {% if group == 'FU_NO_U_I' %}
@@ -106,6 +154,21 @@
         Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
         However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
         If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
+        {% if '5' in info_subtype and '6' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income, your net wealth (e.g., savings invested in bank accounts or stocks) and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype and '6' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income and your net wealth (e.g., savings invested in bank accounts or stocks). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '6' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your net wealth (e.g., savings invested in bank accounts or stocks) and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income. That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '6' in info_subtype %}
+            You stated that you would be able to spend more today by using your net wealth (e.g., savings invested in bank accounts or stocks). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '7' in info_subtype %}
+            You stated that you would be able to spend more today by borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% endif %}
     {% endif %}
 
     {% if group == 'PR_LAR_C' %}
@@ -158,6 +221,21 @@
         Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
         However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
         If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
+        {% if '5' in info_subtype and '6' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income, your net wealth (e.g., savings invested in bank accounts or stocks) and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype and '6' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income and your net wealth (e.g., savings invested in bank accounts or stocks). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '6' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your net wealth (e.g., savings invested in bank accounts or stocks) and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income. That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '6' in info_subtype %}
+            You stated that you would be able to spend more today by using your net wealth (e.g., savings invested in bank accounts or stocks). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '7' in info_subtype %}
+            You stated that you would be able to spend more today by borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% endif %}
     {% endif %}
 
     {% if group == 'PR_LAR_U_I' %}
@@ -174,6 +252,21 @@
         Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
         However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
         If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
+        {% if '5' in info_subtype and '6' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income, your net wealth (e.g., savings invested in bank accounts or stocks) and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype and '6' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income and your net wealth (e.g., savings invested in bank accounts or stocks). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '6' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your net wealth (e.g., savings invested in bank accounts or stocks) and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income. That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '6' in info_subtype %}
+            You stated that you would be able to spend more today by using your net wealth (e.g., savings invested in bank accounts or stocks). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '7' in info_subtype %}
+            You stated that you would be able to spend more today by borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% endif %}
     {% endif %}
 
     {% if group == 'PR_NO_C_I' %}
@@ -184,6 +277,21 @@
         Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
         However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
         If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
+        {% if '5' in info_subtype and '6' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income, your net wealth (e.g., savings invested in bank accounts or stocks) and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype and '6' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income and your net wealth (e.g., savings invested in bank accounts or stocks). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '6' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your net wealth (e.g., savings invested in bank accounts or stocks) and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income. That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '6' in info_subtype %}
+            You stated that you would be able to spend more today by using your net wealth (e.g., savings invested in bank accounts or stocks). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '7' in info_subtype %}
+            You stated that you would be able to spend more today by borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% endif %}
     {% endif %}
 
     {% if group == 'PR_NO_U_I' %}
@@ -194,12 +302,29 @@
         Many people don't think about future income or cash they'll receive later when deciding how much to spend now.
         However, your ability to spend today depends not just on your current income, wealth, and debt, but also on the money you expect to receive in the future.
         If you anticipate future income, you can choose to spend some of it now by dipping into your savings, saving less than usual, or borrowing (for example, using a credit card or a line of credit).
+        {% if '5' in info_subtype and '6' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income, your net wealth (e.g., savings invested in bank accounts or stocks) and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype and '6' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income and your net wealth (e.g., savings invested in bank accounts or stocks). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '6' in info_subtype and '7' in info_subtype %}
+            You stated that you would be able to spend more today by using your net wealth (e.g., savings invested in bank accounts or stocks) and borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '5' in info_subtype %}
+            You stated that you would be able to spend more today by using your disposable income. That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '6' in info_subtype %}
+            You stated that you would be able to spend more today by using your net wealth (e.g., savings invested in bank accounts or stocks). That means you can increase today's spending in anticipation of future income if you like.
+        {% elif '7' in info_subtype %}
+            You stated that you would be able to spend more today by borrowing money (e.g., using consumer credit). That means you can increase today's spending in anticipation of future income if you like.
+        {% endif %}
     {% endif %}
 
     <br>
     {% include "CS1/partials/timeline.html" %}
 
 </div>
+
+
 
 <br>
 
