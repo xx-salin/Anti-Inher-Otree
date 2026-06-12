@@ -61,6 +61,7 @@ class Player(BasePlayer):
     emotional_attachment = models.IntegerField(initial=0)  # no = 1, large = 3
     uncertainty = models.IntegerField(initial=0) # uncertainty = 1, certainty = 2
     scenario_info = models.BooleanField()
+    info_subtype = models.StringField(initial='0')  # disposable income = '5', net worth = '6', borrowing = '7', example all combo '567', none = '0' 
     mother_father = models.IntegerField(initial=0)  # mother = 1, father = 2
     # BOT SCREENING (Attention checks?)
     attention1 = models.IntegerField(initial=2)
@@ -1049,15 +1050,40 @@ def _get_scenario_reminder_text(player: Player):
 
     scenario_text = scenario_text + ' ' + uncertainty_text
 
+
     info_text = ''
     if player.scenario_info:
-        info_text = (
+        base_info = (
             "Many people don't think about future income or cash they'll receive later when deciding how much to spend now. "
             'However, your ability to spend today depends not just on your current income, wealth, and debt, '
             'but also on the money you expect to receive in the future. '
             'If you anticipate future income, you can choose to spend some of it now by dipping into your savings, '
             'saving less than usual, or borrowing (for example, using a credit card or a line of credit).'
         )
+
+        subtype = player.info_subtype
+        ability_parts = []
+        if '5' in subtype:
+            ability_parts.append('your disposable income')
+        if '6' in subtype:
+            ability_parts.append('your net wealth (e.g., savings invested in bank accounts or stocks)')
+        if '7' in subtype:
+            ability_parts.append('borrowing money (e.g., using consumer credit)')
+
+        if ability_parts:
+            if len(ability_parts) == 1:
+                ability_text = ability_parts[0]
+            elif len(ability_parts) == 2:
+                ability_text = f'{ability_parts[0]} and {ability_parts[1]}'
+            else:
+                ability_text = f'{ability_parts[0]}, {ability_parts[1]} and {ability_parts[2]}'
+            personal_sentence = (
+                f'You stated that you would be able to spend more today by using {ability_text}. '
+                'That means you can increase today\'s spending in anticipation of future income if you like.'
+            )
+            info_text = base_info + ' ' + personal_sentence
+        else:
+            info_text = base_info
 
     return scenario_text, info_text
 
@@ -1512,6 +1538,22 @@ class PreScenario_Demographics(Page):
     @staticmethod
     def vars_for_template(player: Player):
         return {'testing': player.session.config["testing"]}
+    
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        q5 = player.Demographics_LiquidityConstraints_1
+        q6 = player.Demographics_LiquidityConstraints_2
+        q7 = player.Demographics_LiquidityConstraints_3
+
+        agreed = []
+        if q5 in [4, 5]:
+            agreed.append('5')
+        if q6 in [4, 5]:
+            agreed.append('6')
+        if q7 in [4, 5]:
+            agreed.append('7')
+
+        player.info_subtype = ''.join(agreed) if agreed else '0'
 
 # ------------------------------------------------------------------------------------------------------------
 # --------------------------------------------- SCENARIO --------------------------------------------
@@ -1701,6 +1743,7 @@ class FU_LAR_C_I(Page):
         return {
             'testing': player.session.config["testing"],
             'variation': player.participant.vars['variation'],
+            'info_subtype': player.info_subtype,
             'scenario_warning': player.scenario_warning,
                 'payment_position':payment_position,
                 'payment_label': payment_label,
@@ -1725,6 +1768,7 @@ class FU_LAR_U_I(Page):
         return {
             'testing': player.session.config["testing"],
             'variation': player.participant.vars['variation'],
+            'info_subtype': player.info_subtype,
             'scenario_warning': player.scenario_warning,
                 'payment_position':payment_position,
                 'payment_label': payment_label,
@@ -1745,6 +1789,7 @@ class FU_NO_C_I(Page):
     def vars_for_template(player: Player):
         payment_position, payment_label = get_timeline_vars(player)
         return {'testing': player.session.config["testing"],
+                'info_subtype': player.info_subtype,
                 'scenario_warning': player.scenario_warning,
                 'payment_position':payment_position,
                 'payment_label': payment_label,
@@ -1761,6 +1806,7 @@ class FU_NO_U_I(Page):
     def vars_for_template(player: Player):
         payment_position, payment_label = get_timeline_vars(player)
         return {'testing': player.session.config["testing"],
+                'info_subtype': player.info_subtype,
                 'scenario_warning': player.scenario_warning,
                 'payment_position':payment_position,
                 'payment_label': payment_label,
@@ -1780,6 +1826,7 @@ class PR_LAR_C_I(Page):
         payment_position, payment_label = get_timeline_vars(player)
         return {'testing': player.session.config["testing"],
                 'variation': player.participant.vars['variation'],
+                'info_subtype': player.info_subtype,
                 'scenario_warning': player.scenario_warning,
                 'payment_position':payment_position,
                 'payment_label': payment_label,
@@ -1803,6 +1850,7 @@ class PR_LAR_U_I(Page):
         payment_position, payment_label = get_timeline_vars(player)
         return {'testing': player.session.config["testing"],
                 'variation': player.participant.vars['variation'],
+                'info_subtype': player.info_subtype,
                 'scenario_warning': player.scenario_warning,
                 'payment_position':payment_position,
                 'payment_label': payment_label,
@@ -1824,6 +1872,7 @@ class PR_NO_C_I(Page):
         payment_position, payment_label = get_timeline_vars(player)
         return {'testing': player.session.config["testing"],
                 'scenario_warning': player.scenario_warning,
+                'info_subtype': player.info_subtype,
                 'payment_position':payment_position,
                 'payment_label': payment_label,
                 'arrow_left_percent': payment_position*25
@@ -1840,6 +1889,7 @@ class PR_NO_U_I(Page):
     def vars_for_template(player: Player):
         payment_position, payment_label = get_timeline_vars(player)
         return {'testing': player.session.config["testing"],
+                'info_subtype': player.info_subtype,
                 'scenario_warning': player.scenario_warning,
                 'payment_position':payment_position,
                 'payment_label': payment_label,
