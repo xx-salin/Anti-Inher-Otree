@@ -393,7 +393,17 @@ class Player(BasePlayer):
 
     react9 = models.LongStringField(
         label='Please explain briefly why you would adjust your spending like this over the upcoming years:', blank=False)
-
+    
+    # Reactions_3 Follow-up
+    react_followup1 = models.LongStringField(blank=True, label='You expressed that the future payment does not affect your spending plans before you receive the payment but that you will increase spending after the payment. Briefly explain why.')
+    react_followup2_i = models.IntegerField(blank=True, min=1, max=5, label='I keep future payments such as this one in a different budget than the budget that I use to determine my current spending')
+    react_followup2_ii = models.IntegerField(blank=True, min=1, max=5, label='It would be morally wrong to spend the money before I receive it')
+    react_followup2_iii = models.IntegerField(blank=True, min=1, max=5, label='I wouldn\'t know how to increase spending using the money I receive in the future')
+    react_followup2_iv = models.IntegerField(blank=True, min=1, max=5, label='I cannot increase spending before receiving the money because I have little savings and cannot access credit')
+    react_followup2_v = models.IntegerField(blank=True, min=1, max=5, label='Spending money in advance would require me to borrow, which I do not want to do')
+    react_followup2_vi = models.IntegerField(blank=True, min=1, max=5, label='I consider that there is too much uncertainty in the timing and value of the payment')
+    react_followup2_other = models.LongStringField(blank=True, label='Other reason. Please specify:')
+    react_followup2_order = models.LongStringField(blank=True)
 
     # Reactions_5
     react_durable_yr1 = models.FloatField(
@@ -2042,6 +2052,165 @@ class Reactions_3(Page):
         _append_keylog_event(player, 'reactions3_keylog', data)
 
 
+##
+
+class Reactions_3_Followup1(Page):
+    form_model = 'player'
+    form_fields = ['react_followup1']
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return (
+            player.future_present == 1 and
+            (player.react_yr1 == 0 or player.react_yr1 is None) and
+            (player.react_yr2 == 0 or player.react_yr2 is None) and
+            (
+                (player.react_yr3 is not None and player.react_yr3 != 0) or
+                (player.react_yr4 is not None and player.react_yr4 != 0) or
+                (player.react_yr5 is not None and player.react_yr5 != 0)
+            )
+        )
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        payment_position, payment_label = get_timeline_vars(player)
+        return {
+            'testing': player.session.config['testing'],
+            'group': player.assigned_group,
+            'variation': player.participant.vars.get('variation'),
+            'info_subtype': player.info_subtype,
+            'react_yr1': player.react_yr1,
+            'react_yr2': player.react_yr2,
+            'react_yr3': player.react_yr3,
+            'react_yr4': player.react_yr4,
+            'react_yr5': player.react_yr5,
+            'payment_position': payment_position,
+            'payment_label': payment_label,
+            'arrow_left_percent': payment_position * 25
+        }
+    
+    @staticmethod
+    def error_message(player: Player, values):
+        errors = {}
+        if not values.get('react_followup1') or len(values.get('react_followup1', '').strip()) < 1:
+            errors['react_followup1'] = 'This field is required.'
+        return errors if errors else None
+
+
+
+class Reactions_3_Followup2(Page):
+    form_model = 'player'
+    form_fields = [
+        'react_followup2_i',
+        'react_followup2_ii',
+        'react_followup2_iii',
+        'react_followup2_iv',
+        'react_followup2_v',
+        'react_followup2_vi',
+        'react_followup2_other'
+    ]
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return (
+            player.future_present == 1 and
+            (player.react_yr1 == 0 or player.react_yr1 is None) and
+            (player.react_yr2 == 0 or player.react_yr2 is None) and
+            (
+                (player.react_yr3 is not None and player.react_yr3 != 0) or
+                (player.react_yr4 is not None and player.react_yr4 != 0) or
+                (player.react_yr5 is not None and player.react_yr5 != 0)
+            )
+        )
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        reasons = ['i', 'ii', 'iii', 'iv', 'v', 'vi']
+        random.shuffle(reasons)
+        player.react_followup2_order = ','.join(reasons)
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        reasons = ['i', 'ii', 'iii', 'iv', 'v', 'vi']
+        payment_position, payment_label = get_timeline_vars(player)
+
+        existing_order = player.field_maybe_none('react_followup2_order')
+        if existing_order:
+            reasons = existing_order.split(',')
+        else:
+            random.shuffle(reasons)
+            player.react_followup2_order = ','.join(reasons)
+
+        likert_choices = [
+            [1, 'Not important'],
+            [2, 'Slightly Important'],
+            [3, 'Moderately Important'],
+            [4, 'Important'],
+            [5, 'Very Important'],
+        ]
+
+        reason_labels = {
+            'i': 'I keep future payments such as this one in a different budget than the budget that I use to determine my current spending',
+            'ii': 'It would be morally wrong to spend the money before I receive it',
+            'iii': "I wouldn't know how to increase spending using the money I receive in the future",
+            'iv': 'I cannot increase spending before receiving the money because I have little savings and cannot access credit',
+            'v': 'Spending money in advance would require me to borrow, which I do not want to do',
+            'vi': 'I consider that there is too much uncertainty in the timing and value of the payment',
+        }
+
+        reason_rows = []
+        for r in reasons:
+            field_name = f'react_followup2_{r}'
+            reason_rows.append(dict(
+                name=field_name,
+                label=reason_labels[r],
+                choices=likert_choices,
+                value=player.field_maybe_none(field_name),
+            ))
+
+        return {
+            'testing': player.session.config['testing'],
+            'group': player.assigned_group,
+            'variation': player.participant.vars.get('variation'),
+            'info_subtype': player.info_subtype,
+            'react_yr1': player.react_yr1,
+            'react_yr2': player.react_yr2,
+            'react_yr3': player.react_yr3,
+            'react_yr4': player.react_yr4,
+            'react_yr5': player.react_yr5,
+            'reason_rows': reason_rows,
+            'payment_position': payment_position,
+            'payment_label': payment_label,
+            'arrow_left_percent': payment_position * 25,
+        }
+    
+    @staticmethod
+    def error_message(player: Player, values):
+        # Save submitted values so they persist on re-render
+        for field in ['react_followup2_i', 'react_followup2_ii', 'react_followup2_iii',
+                    'react_followup2_iv', 'react_followup2_v', 'react_followup2_vi']:
+            val = values.get(field)
+            if val is not None:
+                setattr(player, field, val)
+
+        errors = {}
+        for field in ['react_followup2_i', 'react_followup2_ii', 'react_followup2_iii',
+                    'react_followup2_iv', 'react_followup2_v', 'react_followup2_vi']:
+            if values.get(field) is None:
+                errors[field] = 'This field is required.'
+        return errors if errors else None
+    
+
+
+
+##
+
+
+
+
+
+
+
 class Reactions_5(Page):
     form_model = 'player'
     form_fields = [
@@ -2382,7 +2551,7 @@ page_sequence = [
 
     ComprehensionTest,
 
-    Reactions_2, Reactions_3, Reactions_5, Reactions_6,
+    Reactions_2, Reactions_3, Reactions_3_Followup1, Reactions_3_Followup2, Reactions_5, Reactions_6,
     Reactions_7, Reactions_8,
 
     AttentionCheck1_AI, AttentionCheck2_AI, BotScreening,
