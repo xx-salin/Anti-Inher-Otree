@@ -392,7 +392,7 @@ class Player(BasePlayer):
         label='Total rest of your life:', min=C.REACTION_SPEND_MIN, max=C.REACTION_SPEND_MAX, blank=False)
 
     react9 = models.LongStringField(
-        label='Please explain briefly why you would adjust your spending like this over the upcoming years:', blank=False)
+        label='Please explain briefly why you would adjust your spending like this over the upcoming years:', blank=True)
     
     # Reactions_3 Follow-up
     react_followup1 = models.LongStringField(blank=True, label='You expressed that the future payment does not affect your spending plans before you receive the payment but that you will increase spending after the payment. Briefly explain why.')
@@ -2000,7 +2000,7 @@ class Reactions_2(Page):
 
 class Reactions_3(Page):
     form_model = 'player'
-    form_fields = ['react_yr1', 'react_yr2', 'react_yr3', 'react_yr4', 'react_yr5', 'react9']
+    form_fields = ['react_yr1', 'react_yr2', 'react_yr3', 'react_yr4', 'react_yr5']
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -2042,9 +2042,6 @@ class Reactions_3(Page):
             for field in total_fields:
                 errors[field] = total_msg
 
-        if not _text_length_ok(values.get('react9')):
-            errors['react9'] = _min_text_error()
-
         return errors if errors else None
 
     @staticmethod
@@ -2053,6 +2050,56 @@ class Reactions_3(Page):
 
 
 ##
+
+class Reactions_3_Followup1a(Page):
+    form_model = 'player'
+    form_fields = ['react9']
+
+    @staticmethod
+    def is_displayed(player: Player):
+        all_zero = all(
+            (player.field_maybe_none(f) or 0) == 0
+            for f in ['react_yr1', 'react_yr2', 'react_yr3', 'react_yr4', 'react_yr5']
+        )
+        case1 = (
+            player.future_present == 1 and
+            (player.react_yr1 == 0 or player.react_yr1 is None) and
+            (player.react_yr2 == 0 or player.react_yr2 is None) and
+            (
+                (player.react_yr3 is not None and player.react_yr3 != 0) or
+                (player.react_yr4 is not None and player.react_yr4 != 0) or
+                (player.react_yr5 is not None and player.react_yr5 != 0)
+            )
+        )
+        return not case1 and not all_zero
+    
+    @staticmethod
+    def vars_for_template(player: Player):
+        payment_position, payment_label = get_timeline_vars(player)
+        return {
+            'testing': player.session.config['testing'],
+            'group': player.assigned_group,
+            'variation': player.participant.vars.get('variation'),
+            'info_subtype': player.info_subtype,
+            'react_yr1': player.react_yr1,
+            'react_yr2': player.react_yr2,
+            'react_yr3': player.react_yr3,
+            'react_yr4': player.react_yr4,
+            'react_yr5': player.react_yr5,
+            'payment_position': payment_position,
+            'payment_label': payment_label,
+            'arrow_left_percent': payment_position * 25
+        }
+    
+    @staticmethod
+    def error_message(player: Player, values):
+        errors = {}
+        if not values.get('react9') or len(values.get('react9', '').strip()) < 1:
+            errors['react9'] = 'This field is required.'
+        return errors if errors else None
+
+
+
 
 class Reactions_3_Followup1(Page):
     form_model = 'player'
@@ -2551,7 +2598,7 @@ page_sequence = [
 
     ComprehensionTest,
 
-    Reactions_2, Reactions_3, Reactions_3_Followup1, Reactions_3_Followup2, Reactions_5, Reactions_6,
+    Reactions_2, Reactions_3, Reactions_3_Followup1, Reactions_3_Followup2, Reactions_3_Followup1a, Reactions_5, Reactions_6,
     Reactions_7, Reactions_8,
 
     AttentionCheck1_AI, AttentionCheck2_AI, BotScreening,
