@@ -1,0 +1,57 @@
+{% extends "global/Base.html" %}
+{% load otree static %}
+
+{% block title %}
+    Concluding Survey 1 — Followup 2
+{% endblock %}
+
+{% block content %}
+    <div style="font-size: 16px;">
+        <strong>You indicate that your expected parental inheritance does not affect your current spending, saving, or career choices. Do you agree with the following statement?</strong>
+    </div>
+
+    <div style="margin-top: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; background-color: #f9f9f9;">
+        "Before today, I have never even thought about whether the inheritance I expect should affect my current spending, saving or career choices."
+    </div>
+
+    <div style="margin-top: 10px; font-size: 14px; color: #555;">
+        Only answer "Yes" if the thought has never crossed your mind. Answer "No" if you have considered the question but decided not to change your saving, spending, or career choices.
+    </div>
+
+    <div style="margin-top: 20px;">
+        <div style="margin-top: 10px;">
+            <label>
+                <input type="radio" name="inh_followup_thought" value="1"
+                    {% if inh_followup_thought == 1 %}checked{% endif %}>
+                Yes
+            </label>
+        </div>
+        <div style="margin-top: 10px;">
+            <label>
+                <input type="radio" name="inh_followup_thought" value="2"
+                    {% if inh_followup_thought == 2 %}checked{% endif %}>
+                No
+            </label>
+        </div>
+        {% formfield_errors 'inh_followup_thought' %}
+    </div>
+
+    <div style="margin-top: 30px;">
+        {{ next_button }}
+    </div>
+
+{% if testing %}
+    <button id="skipBtn" class="btn btn-secondary px-3" onclick="skipPage()">
+        Skip for testing
+    </button>
+{% endif %}
+{{ endblock }}
+
+{% block scripts %}
+<script>
+    function skipPage() {
+        document.querySelector('input[name="inh_followup_thought"][value="2"]').checked = true;
+        document.querySelector('form').submit();
+    }
+</script>
+{% endblock %}

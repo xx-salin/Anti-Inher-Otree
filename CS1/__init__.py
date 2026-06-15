@@ -848,6 +848,23 @@ class Player(BasePlayer):
             [4, "Prefer not to say"]]
     )
 
+
+    # Concluding survey inheritance follow-up
+    inh_followup_effect = models.IntegerField(blank=True)
+    inh_followup_effect_order = models.StringField(blank=True)
+    inh_followup_thought = models.IntegerField(blank=True)
+    inh_followup_why = models.LongStringField(blank=True, label='Please explain why:')
+    inh_followup_reason_i = models.IntegerField(blank=True, min=1, max=5, label='I keep future payments such as this one in a different budget than the budget that I use to determine my current spending')
+    inh_followup_reason_ii = models.IntegerField(blank=True, min=1, max=5, label='It would be morally wrong to spend the inheritance before I receive it')
+    inh_followup_reason_iii = models.IntegerField(blank=True, min=1, max=5, label="I wouldn't know how to increase spending using the inheritance I receive in the future")
+    inh_followup_reason_iv = models.IntegerField(blank=True, min=1, max=5, label='I cannot increase spending before receiving the inheritance because I have little savings and cannot access credit')
+    inh_followup_reason_v = models.IntegerField(blank=True, min=1, max=5, label='Spending the inheritance in advance would require me to borrow, which I do not want to do')
+    inh_followup_reason_vi = models.IntegerField(blank=True, min=1, max=5, label='I consider that there is too much uncertainty in the timing and value of the inheritance')
+    inh_followup_reason_vii = models.IntegerField(blank=True, min=1, max=5, label='I worry that my parent would reduce my inheritance if I spent some of it in advance')
+    inh_followup_reason_other = models.LongStringField(blank=True, label='Other reason. Please specify:')
+    inh_followup_reason_order = models.StringField(blank=True)
+
+
     # Feedback
     OpenFeedback = models.LongStringField(
         label='Please describe in short any feedback you might have on this survey.', blank=True)
@@ -2520,6 +2537,28 @@ class Reactions_6(Page):
 class ResultsWaitPage(WaitPage):
     pass
 
+
+def _qualifies_for_inheritance_followup(player: Player):
+    mother_age = player.field_maybe_none('Demographics_Mother')
+    father_age = player.field_maybe_none('Demographics_Father')
+    mother_inh = player.field_maybe_none('Demographics_MotherInheritance')
+    father_inh = player.field_maybe_none('Demographics_FatherInheritance')
+
+
+    mother_qualifies = (
+        mother_age is not None and
+        mother_inh is not None and
+        mother_inh > 0 and
+        mother_inh != 42
+    )
+    father_qualifies = (
+        father_age is not None and
+        father_inh is not None and
+        father_inh > 0 and
+        father_inh != 42
+    )
+    return mother_qualifies or father_qualifies
+
 class Demographics_1(Page):
     form_model = 'player'
     form_fields = [
@@ -2536,6 +2575,171 @@ class Demographics_1(Page):
     @staticmethod
     def vars_for_template(player: Player):
         return {'testing': player.session.config["testing"]}
+    
+##
+
+class Inh_Followup_A(Page):
+    form_model = 'player'
+    form_fields = ['inh_followup_effect']
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return _qualifies_for_inheritance_followup(player)
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        existing_order = player.field_maybe_none('inh_followup_effect_order')
+        if not existing_order:
+            order = ['1', '2']
+            random.shuffle(order)
+            player.inh_followup_effect_order = ','.join(order)
+        else:
+            order = existing_order.split(',')
+        return {
+            'testing': player.session.config['testing'],
+            'order': order,
+            'inh_followup_effect': player.field_maybe_none('inh_followup_effect'),
+        }
+
+    @staticmethod
+    def error_message(player: Player, values):
+        if values.get('inh_followup_effect') is None:
+            return {'inh_followup_effect': 'This field is required.'}
+
+
+class Inh_Followup_B(Page):
+    form_model = 'player'
+    form_fields = ['inh_followup_thought']
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return (
+            _qualifies_for_inheritance_followup(player) and
+            player.field_maybe_none('inh_followup_effect') == 2
+        )
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return {'testing': player.session.config['testing'],
+                'inh_followup_thought': player.field_maybe_none('inh_followup_thought'),
+        }
+
+    @staticmethod
+    def error_message(player: Player, values):
+        if values.get('inh_followup_thought') is None:
+            return {'inh_followup_thought': 'This field is required.'}
+
+
+class Inh_Followup_C(Page):
+    form_model = 'player'
+    form_fields = ['inh_followup_why']
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return (
+            _qualifies_for_inheritance_followup(player) and
+            player.field_maybe_none('inh_followup_effect') == 2 and
+            player.field_maybe_none('inh_followup_thought') == 2
+        )
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return {'testing': player.session.config['testing']}
+
+    @staticmethod
+    def error_message(player: Player, values):
+        if not values.get('inh_followup_why') or len(values.get('inh_followup_why', '').strip()) < 1:
+            return {'inh_followup_why': 'This field is required.'}
+
+
+class Inh_Followup_D(Page):
+    form_model = 'player'
+    form_fields = [
+        'inh_followup_reason_i',
+        'inh_followup_reason_ii',
+        'inh_followup_reason_iii',
+        'inh_followup_reason_iv',
+        'inh_followup_reason_v',
+        'inh_followup_reason_vi',
+        'inh_followup_reason_vii',
+        'inh_followup_reason_other',
+    ]
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return (
+            _qualifies_for_inheritance_followup(player) and
+            player.field_maybe_none('inh_followup_effect') == 2 and
+            player.field_maybe_none('inh_followup_thought') == 2
+        )
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        reasons = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii']
+        random.shuffle(reasons)
+        player.inh_followup_reason_order = ','.join(reasons)
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        reasons = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii']
+        existing_order = player.field_maybe_none('inh_followup_reason_order')
+        if existing_order:
+            reasons = existing_order.split(',')
+        else:
+            random.shuffle(reasons)
+            player.inh_followup_reason_order = ','.join(reasons)
+
+        likert_choices = [
+            [1, 'Not important'],
+            [2, 'Slightly Important'],
+            [3, 'Moderately Important'],
+            [4, 'Important'],
+            [5, 'Very Important'],
+        ]
+
+        reason_labels = {
+            'i': 'I keep future payments such as this one in a different budget than the budget that I use to determine my current spending',
+            'ii': 'It would be morally wrong to spend the inheritance before I receive it',
+            'iii': "I wouldn't know how to increase spending using the inheritance I receive in the future",
+            'iv': 'I cannot increase spending before receiving the inheritance because I have little savings and cannot access credit',
+            'v': 'Spending the inheritance in advance would require me to borrow, which I do not want to do',
+            'vi': 'I consider that there is too much uncertainty in the timing and value of the inheritance',
+            'vii': 'I worry that my parent would reduce my inheritance if I spent some of it in advance',
+        }
+
+        reason_rows = []
+        for r in reasons:
+            field_name = f'inh_followup_reason_{r}'
+            reason_rows.append(dict(
+                name=field_name,
+                label=reason_labels[r],
+                choices=likert_choices,
+                value=player.field_maybe_none(field_name),
+            ))
+
+        return {
+            'testing': player.session.config['testing'],
+            'reason_rows': reason_rows,
+        }
+
+    @staticmethod
+    def error_message(player: Player, values):
+        for field in ['inh_followup_reason_i', 'inh_followup_reason_ii', 'inh_followup_reason_iii',
+                      'inh_followup_reason_iv', 'inh_followup_reason_v', 'inh_followup_reason_vi',
+                      'inh_followup_reason_vii']:
+            val = values.get(field)
+            if val is not None:
+                setattr(player, field, val)
+
+        errors = {}
+        for field in ['inh_followup_reason_i', 'inh_followup_reason_ii', 'inh_followup_reason_iii',
+                      'inh_followup_reason_iv', 'inh_followup_reason_v', 'inh_followup_reason_vi',
+                      'inh_followup_reason_vii']:
+            if values.get(field) is None:
+                errors[field] = 'This field is required.'
+        return errors if errors else None
+
+##
 
 class Demographics_3(Page):
     form_model = 'player'
@@ -2603,7 +2807,7 @@ page_sequence = [
 
     AttentionCheck1_AI, AttentionCheck2_AI, BotScreening,
 
-    Demographics_1, Demographics_3, Demographics_4,
+    Demographics_1, Inh_Followup_A, Inh_Followup_B, Inh_Followup_C, Inh_Followup_D, Demographics_3, Demographics_4,
 
     Feedback, LinkToProlific]
 
