@@ -350,6 +350,112 @@ class Player(BasePlayer):
     comp_failed_attempts = models.IntegerField(initial=0)
     comp_wrong_history = models.LongStringField(initial='')
 
+
+    
+    # PreScenario Demographics:
+    Demographics_Household_Income = models.IntegerField(
+        label='Which of the following best describes your total household income last year?',
+        widget=widgets.RadioSelect(),
+        choices=[
+            [0, f"{C.DEFAULT_CURRENCY_SYMBOL}0"],
+            [1, f"Less than {C.DEFAULT_CURRENCY_SYMBOL}10,000"],
+            [2, f"Between {C.DEFAULT_CURRENCY_SYMBOL}10,000 and {C.DEFAULT_CURRENCY_SYMBOL}20,000"],
+            [3, f"Between {C.DEFAULT_CURRENCY_SYMBOL}20,000 and {C.DEFAULT_CURRENCY_SYMBOL}40,000"],
+            [4, f"Between {C.DEFAULT_CURRENCY_SYMBOL}40,000 and {C.DEFAULT_CURRENCY_SYMBOL}80,000"],
+            [5, f"Between {C.DEFAULT_CURRENCY_SYMBOL}80,000 and {C.DEFAULT_CURRENCY_SYMBOL}160,000"],
+            [6, f"Between {C.DEFAULT_CURRENCY_SYMBOL}160,000 and {C.DEFAULT_CURRENCY_SYMBOL}320,000"],
+            [7, f"{C.DEFAULT_CURRENCY_SYMBOL}320,000 or more"],
+            [8, "Prefer not to say"]
+        ])
+
+    Demographics_LiquidWealth = models.IntegerField(
+        label='How much easily accessible savings do you own (e.g., money on bank accounts, investments in mutual funds or stocks, or other financial wealth)?',
+        widget=widgets.RadioSelect(),
+        choices=[
+            [0, f"{C.DEFAULT_CURRENCY_SYMBOL}0"],
+            [1, f"Less than {C.DEFAULT_CURRENCY_SYMBOL}5,000"],
+            [2, f"Between {C.DEFAULT_CURRENCY_SYMBOL}5,000 and {C.DEFAULT_CURRENCY_SYMBOL}10,000"],
+            [3, f"Between {C.DEFAULT_CURRENCY_SYMBOL}10,000 and {C.DEFAULT_CURRENCY_SYMBOL}15,000"],
+            [4, f"Between {C.DEFAULT_CURRENCY_SYMBOL}15,000 and {C.DEFAULT_CURRENCY_SYMBOL}20,000"],
+            [5, f"Between {C.DEFAULT_CURRENCY_SYMBOL}20,000 and {C.DEFAULT_CURRENCY_SYMBOL}25,000"],
+            [6, f"{C.DEFAULT_CURRENCY_SYMBOL}25,000 or more"],
+            [7, "Prefer not to say"]
+        ])
+
+
+    Demographics_IlliquidWealth = models.IntegerField(
+        label='How much other wealth do you own (e.g., value of your home, other real estate you own, or other non-financial assets)?',
+        widget=widgets.RadioSelect(),
+        choices=[
+            [0, f"{C.DEFAULT_CURRENCY_SYMBOL}0"],
+            [1, f"Less than {C.DEFAULT_CURRENCY_SYMBOL}20,000"],
+            [2, f"Between {C.DEFAULT_CURRENCY_SYMBOL}20,000 and {C.DEFAULT_CURRENCY_SYMBOL}40,000"],
+            [3, f"Between {C.DEFAULT_CURRENCY_SYMBOL}40,000 and {C.DEFAULT_CURRENCY_SYMBOL}80,000"],
+            [4, f"Between {C.DEFAULT_CURRENCY_SYMBOL}80,000 and {C.DEFAULT_CURRENCY_SYMBOL}160,000"],
+            [5, f"Between {C.DEFAULT_CURRENCY_SYMBOL}160,000 and {C.DEFAULT_CURRENCY_SYMBOL}320,000"],
+            [6, f"Between {C.DEFAULT_CURRENCY_SYMBOL}320,000 and {C.DEFAULT_CURRENCY_SYMBOL}640,000"],
+            [7, f"{C.DEFAULT_CURRENCY_SYMBOL}640,000 or more"],
+            [8, "Prefer not to say"]
+        ])
+
+    Demographics_DebtWealth = models.IntegerField(
+        label='How much debt do you owe (e.g., mortgages, credit card debt, or lines of credit)?',
+        widget=widgets.RadioSelect(),
+        choices=[
+            [0, f"{C.DEFAULT_CURRENCY_SYMBOL}0"],
+            [1, f"Less than {C.DEFAULT_CURRENCY_SYMBOL}20,000"],
+            [2, f"Between {C.DEFAULT_CURRENCY_SYMBOL}20,000 and {C.DEFAULT_CURRENCY_SYMBOL}40,000"],
+            [3, f"Between {C.DEFAULT_CURRENCY_SYMBOL}40,000 and {C.DEFAULT_CURRENCY_SYMBOL}80,000"],
+            [4, f"Between {C.DEFAULT_CURRENCY_SYMBOL}80,000 and {C.DEFAULT_CURRENCY_SYMBOL}160,000"],
+            [5, f"Between {C.DEFAULT_CURRENCY_SYMBOL}160,000 and {C.DEFAULT_CURRENCY_SYMBOL}320,000"],
+            [6, f"Between {C.DEFAULT_CURRENCY_SYMBOL}320,000 and {C.DEFAULT_CURRENCY_SYMBOL}640,000"],
+            [7, f"{C.DEFAULT_CURRENCY_SYMBOL}640,000 or more"],
+            [8, "Prefer not to say"]
+        ])
+
+    Demographics_LiquidityConstraints_1 = models.IntegerField(
+        label='Please assess the following statement: "I would be able to spend more today by using my disposable income."',
+        widget=widgets.RadioSelectHorizontal,
+        choices=[
+            [1, 'Strongly disagree'],
+            [2, 'Disagree'],
+            [3, 'Neutral'],
+            [4, 'Agree'],
+            [5, 'Strongly agree'],
+            [6, 'Do not know'],
+            [7, 'Prefer not to say'],
+        ])
+
+    Demographics_LiquidityConstraints_2 = models.IntegerField(
+        label='Please assess the following statement: "I would be able to spend more today by using my net wealth (e.g., savings invested in bank accounts or stocks)."',
+        widget=widgets.RadioSelectHorizontal,
+        choices=[
+            [1, 'Strongly disagree'],
+            [2, 'Disagree'],
+            [3, 'Neutral'],
+            [4, 'Agree'],
+            [5, 'Strongly agree'],
+            [6, 'Do not know'],
+            [7, 'Prefer not to say'],
+        ])
+
+    Demographics_LiquidityConstraints_3 = models.IntegerField(
+        label='Please assess the following statement: "I would be able to spend more today by borrowing money (e.g., using consumer credit).”',
+        widget=widgets.RadioSelectHorizontal,
+        choices=[
+            [1, 'Strongly disagree'],
+            [2, 'Disagree'],
+            [3, 'Neutral'],
+            [4, 'Agree'],
+            [5, 'Strongly agree'],
+            [6, 'Do not know'],
+            [7, 'Prefer not to say'],
+        ])
+
+
+
+
+
     # ------------------------------------------------------------------------------------------------------------
     # --------------------------------------------- REACTIONS --------------------------------------------
     # ------------------------------------------------------------------------------------------------------------
@@ -414,7 +520,7 @@ class Player(BasePlayer):
     react_nondurable_services_yr1 = models.FloatField(
         label='Non-durable goods and services that do not last for a long time (e.g., food, clothes, vacation, etc.):', min=None, blank=False)
     react_nondurable_services_yr2 = models.FloatField(min=None, blank=False)
-    react_nondurable_services_yr3 = models.FloatField(min=None, blank=False)
+    react_nondurable_services_yr3 = models.FloatField(min=None, blanok=False)
 
     # Reactions_6
     react20 = models.LongStringField(
@@ -578,7 +684,7 @@ class Player(BasePlayer):
                                                 ],
                                                 verbose_name='Do you have children?',
                                                 widget=widgets.RadioSelect())
-
+    
     Demographics_Mother = models.IntegerField(
         label="What is your mother's age? Please leave this field empty if your mother has passed away, you do not know, or you do not want to respond. Enter an estimate if you are uncertain.", min=18, max=130, blank=True)
 
@@ -591,121 +697,8 @@ class Player(BasePlayer):
     Demographics_FatherInheritance = models.IntegerField(
         label=f"How much do you expect to inherit from your father (in {C.DEFAULT_CURRENCY_SYMBOL})? Please enter the approximate value of the inheritance if your father has passed away already, or 42 if you do not know / do not want to respond.", min=0, max=100_000_000, blank=True)
 
-    # Demographics 2:
-    Demographics_Household_Income = models.IntegerField(
-        label='Which of the following best describes your total household income last year?',
-        widget=widgets.RadioSelect(),
-        choices=[
-            [0, f"{C.DEFAULT_CURRENCY_SYMBOL}0"],
-            [1, f"Less than {C.DEFAULT_CURRENCY_SYMBOL}10,000"],
-            [2, f"Between {C.DEFAULT_CURRENCY_SYMBOL}10,000 and {C.DEFAULT_CURRENCY_SYMBOL}20,000"],
-            [3, f"Between {C.DEFAULT_CURRENCY_SYMBOL}20,000 and {C.DEFAULT_CURRENCY_SYMBOL}40,000"],
-            [4, f"Between {C.DEFAULT_CURRENCY_SYMBOL}40,000 and {C.DEFAULT_CURRENCY_SYMBOL}80,000"],
-            [5, f"Between {C.DEFAULT_CURRENCY_SYMBOL}80,000 and {C.DEFAULT_CURRENCY_SYMBOL}160,000"],
-            [6, f"Between {C.DEFAULT_CURRENCY_SYMBOL}160,000 and {C.DEFAULT_CURRENCY_SYMBOL}320,000"],
-            [7, f"{C.DEFAULT_CURRENCY_SYMBOL}320,000 or more"],
-            [8, "Prefer not to say"]
-        ])
 
-    Demographics_LiquidWealth = models.IntegerField(
-        label='How much easily accessible savings do you own (e.g., money on bank accounts, investments in mutual funds or stocks, or other financial wealth)?',
-        widget=widgets.RadioSelect(),
-        choices=[
-            [0, f"{C.DEFAULT_CURRENCY_SYMBOL}0"],
-            [1, f"Less than {C.DEFAULT_CURRENCY_SYMBOL}5,000"],
-            [2, f"Between {C.DEFAULT_CURRENCY_SYMBOL}5,000 and {C.DEFAULT_CURRENCY_SYMBOL}10,000"],
-            [3, f"Between {C.DEFAULT_CURRENCY_SYMBOL}10,000 and {C.DEFAULT_CURRENCY_SYMBOL}15,000"],
-            [4, f"Between {C.DEFAULT_CURRENCY_SYMBOL}15,000 and {C.DEFAULT_CURRENCY_SYMBOL}20,000"],
-            [5, f"Between {C.DEFAULT_CURRENCY_SYMBOL}20,000 and {C.DEFAULT_CURRENCY_SYMBOL}25,000"],
-            [6, f"{C.DEFAULT_CURRENCY_SYMBOL}25,000 or more"],
-            [7, "Prefer not to say"]
-        ])
-
-
-    Demographics_IlliquidWealth = models.IntegerField(
-        label='How much other wealth do you own (e.g., value of your home, other real estate you own, or other non-financial assets)?',
-        widget=widgets.RadioSelect(),
-        choices=[
-            [0, f"{C.DEFAULT_CURRENCY_SYMBOL}0"],
-            [1, f"Less than {C.DEFAULT_CURRENCY_SYMBOL}20,000"],
-            [2, f"Between {C.DEFAULT_CURRENCY_SYMBOL}20,000 and {C.DEFAULT_CURRENCY_SYMBOL}40,000"],
-            [3, f"Between {C.DEFAULT_CURRENCY_SYMBOL}40,000 and {C.DEFAULT_CURRENCY_SYMBOL}80,000"],
-            [4, f"Between {C.DEFAULT_CURRENCY_SYMBOL}80,000 and {C.DEFAULT_CURRENCY_SYMBOL}160,000"],
-            [5, f"Between {C.DEFAULT_CURRENCY_SYMBOL}160,000 and {C.DEFAULT_CURRENCY_SYMBOL}320,000"],
-            [6, f"Between {C.DEFAULT_CURRENCY_SYMBOL}320,000 and {C.DEFAULT_CURRENCY_SYMBOL}640,000"],
-            [7, f"{C.DEFAULT_CURRENCY_SYMBOL}640,000 or more"],
-            [8, "Prefer not to say"]
-        ])
-
-    Demographics_DebtWealth = models.IntegerField(
-        label='How much debt do you owe (e.g., mortgages, credit card debt, or lines of credit)?',
-        widget=widgets.RadioSelect(),
-        choices=[
-            [0, f"{C.DEFAULT_CURRENCY_SYMBOL}0"],
-            [1, f"Less than {C.DEFAULT_CURRENCY_SYMBOL}20,000"],
-            [2, f"Between {C.DEFAULT_CURRENCY_SYMBOL}20,000 and {C.DEFAULT_CURRENCY_SYMBOL}40,000"],
-            [3, f"Between {C.DEFAULT_CURRENCY_SYMBOL}40,000 and {C.DEFAULT_CURRENCY_SYMBOL}80,000"],
-            [4, f"Between {C.DEFAULT_CURRENCY_SYMBOL}80,000 and {C.DEFAULT_CURRENCY_SYMBOL}160,000"],
-            [5, f"Between {C.DEFAULT_CURRENCY_SYMBOL}160,000 and {C.DEFAULT_CURRENCY_SYMBOL}320,000"],
-            [6, f"Between {C.DEFAULT_CURRENCY_SYMBOL}320,000 and {C.DEFAULT_CURRENCY_SYMBOL}640,000"],
-            [7, f"{C.DEFAULT_CURRENCY_SYMBOL}640,000 or more"],
-            [8, "Prefer not to say"]
-        ])
-
-    Demographics_LiquidityConstraints_1 = models.IntegerField(
-        label='Please assess the following statement: "I would be able to spend more today by using my disposable income."',
-        widget=widgets.RadioSelectHorizontal,
-        choices=[
-            [1, 'Strongly disagree'],
-            [2, 'Disagree'],
-            [3, 'Neutral'],
-            [4, 'Agree'],
-            [5, 'Strongly agree'],
-            [6, 'Do not know'],
-            [7, 'Prefer not to say'],
-        ])
-
-    Demographics_LiquidityConstraints_2 = models.IntegerField(
-        label='Please assess the following statement: "I would be able to spend more today by using my net wealth (e.g., savings invested in bank accounts or stocks)."',
-        widget=widgets.RadioSelectHorizontal,
-        choices=[
-            [1, 'Strongly disagree'],
-            [2, 'Disagree'],
-            [3, 'Neutral'],
-            [4, 'Agree'],
-            [5, 'Strongly agree'],
-            [6, 'Do not know'],
-            [7, 'Prefer not to say'],
-        ])
-
-    Demographics_LiquidityConstraints_3 = models.IntegerField(
-        label='Please assess the following statement: "I would be able to spend more today by borrowing money (e.g., using consumer credit).”',
-        widget=widgets.RadioSelectHorizontal,
-        choices=[
-            [1, 'Strongly disagree'],
-            [2, 'Disagree'],
-            [3, 'Neutral'],
-            [4, 'Agree'],
-            [5, 'Strongly agree'],
-            [6, 'Do not know'],
-            [7, 'Prefer not to say'],
-        ])
-
-    Demographics_Debt = models.IntegerField(
-        verbose_name='Please assess the following statement: "Debt is an integral part of life today." Please select a category between 1 (“Strongly disagree”) to 5 (“Strongly agree”).',
-        choices=range(1, 6),
-        initial=None,
-        widget=widgets.RadioSelectHorizontal(),
-        blank=False)
-
-    Demographics_DebtAverage = models.IntegerField(
-        verbose_name='What do you think, how does the average participant in this survey rate the following statement: "There is no excuse for borrowing money." Please select a category between 1 (“Strongly disagree”) to 5 (“Strongly agree”).',
-        choices=range(1, 6),
-        initial=None,
-        widget=widgets.RadioSelectHorizontal(),
-        blank=False)
-
-    # Demographics 3
+    # Demographics 2
     Demographics_RiskAversion = models.IntegerField(
         label='In general, how willing or unwilling are you to take risks? Please select a category between 1 ("Completely unwilling to take risks") to 7 ("Very willing to take risks").',
         choices=range(1, 8),
@@ -737,6 +730,20 @@ class Player(BasePlayer):
             [4, 'Often'],
             [5, 'Very often'],
         ])
+    
+    Demographics_Debt = models.IntegerField(
+        verbose_name='Please assess the following statement: "Debt is an integral part of life today." Please select a category between 1 (“Strongly disagree”) to 5 (“Strongly agree”).',
+        choices=range(1, 6),
+        initial=None,
+        widget=widgets.RadioSelectHorizontal(),
+        blank=False)
+
+    Demographics_DebtAverage = models.IntegerField(
+        verbose_name='What do you think, how does the average participant in this survey rate the following statement: "There is no excuse for borrowing money." Please select a category between 1 (“Strongly disagree”) to 5 (“Strongly agree”).',
+        choices=range(1, 6),
+        initial=None,
+        widget=widgets.RadioSelectHorizontal(),
+        blank=False)
 
     Demographics_Anxious = models.IntegerField(
         label='"Thinking about my personal finances can make me feel anxious."',
@@ -1138,7 +1145,7 @@ def _comprehension_wrong_ids(player: Player, values):
 # ------------------------------------------------------------------------------------------------------------
 def creating_session(subsession: Subsession):
     if subsession.round_number == 1:
-        # FU = Future, PR = Present; LAR, SMA, NO = Large, Small, No - respectively; I = Information
+        # FU = Future, PR = Present; LAR = Large (parent) NO = None (tax); C = Certainty, U = Uncertainty; I = Information
         groups = [
             'FU_LAR_C', 'FU_NO_C', 'PR_LAR_C', 'PR_NO_C',
             'FU_LAR_U', 'FU_NO_U', 'PR_LAR_U', 'PR_NO_U',
@@ -2710,7 +2717,7 @@ class Inh_Followup_D(Page):
 
 ##
 
-class Demographics_3(Page):
+class Demographics_2(Page):
     form_model = 'player'
     form_fields = [
         "Demographics_RiskAversion",
@@ -2776,7 +2783,7 @@ page_sequence = [
 
     AttentionCheck1_AI, AttentionCheck2_AI, BotScreening,
 
-    Demographics_1, Inh_Followup_A, Inh_Followup_B, Inh_Followup_C, Inh_Followup_D, Demographics_3, Demographics_4,
+    Demographics_1, Inh_Followup_A, Inh_Followup_B, Inh_Followup_C, Inh_Followup_D, Demographics_2, Demographics_4,
 
     Feedback, LinkToProlific]
 
