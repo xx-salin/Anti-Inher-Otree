@@ -58,7 +58,7 @@ class Player(BasePlayer):
     prolific_id = models.StringField(blank=True, label='Your Prolific ID')
     spend_save = models.IntegerField(initial=0)  # spend = 1, save = 2
     future_present = models.IntegerField()  # future = 1, present = 2
-    emotional_attachment = models.IntegerField(initial=0)  # no = 1, large = 3
+    emotional_attachment = models.IntegerField(initial=0)  # tax (low) = 1, parent (high) = 2
     uncertainty = models.IntegerField(initial=0) # uncertainty = 1, certainty = 2
     scenario_info = models.BooleanField()
     info_subtype = models.StringField(initial='0')  # disposable income = '5', net worth = '6', borrowing = '7', example all combo '567', none = '0' 
@@ -1038,7 +1038,7 @@ def _append_comprehension_failure(player: Player, wrong_ids):
 
 
 def _get_scenario_reminder_text(player: Player):
-    if player.emotional_attachment == 3:
+    if player.emotional_attachment == 2:
         variation = player.participant.vars.get('variation')
         relation = 'father' if variation == 2 else 'mother'
         if player.future_present == 1:
@@ -1154,7 +1154,7 @@ def creating_session(subsession: Subsession):
             player.future_present = 1 if player.assigned_group in ['FU_LAR_C', 'FU_NO_C', 'FU_LAR_U', 'FU_NO_U','FU_LAR_C_I', 'FU_NO_C_I', 'FU_LAR_U_I', 'FU_NO_U_I'] else 2
 
             if player.assigned_group in ['FU_LAR_C', 'PR_LAR_C', 'FU_LAR_U', 'PR_LAR_U', 'FU_LAR_C_I', 'PR_LAR_C_I', 'FU_LAR_U_I', 'PR_LAR_U_I']:
-                player.emotional_attachment = 3
+                player.emotional_attachment = 2
             elif player.assigned_group in ['FU_NO_C', 'PR_NO_C', 'FU_NO_U', 'PR_NO_U', 'FU_NO_C_I', 'PR_NO_C_I', 'FU_NO_U_I', 'PR_NO_U_I']:
                 player.emotional_attachment = 1
         
@@ -2406,37 +2406,6 @@ class Reactions_7(Page):
     @staticmethod
     def live_method(player: Player, data):
         _append_keylog_event(player, 'reactions6_keylog', data)
-
-
-class Reactions_9(Page):
-    form_model = 'player'
-
-    @staticmethod
-    def get_form_fields(player: Player):
-        if player.emotional_attachment == 2 or player.emotional_attachment == 3:
-            return ['react_inheritance', 'react_inheritance_why']
-        elif player.emotional_attachment == 1:
-            return ['react_taxrefund', 'react_taxrefund_why']
-        else:
-            return []
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        return {
-            'testing': player.session.config["testing"],
-            'info_subtype': player.info_subtype,
-            'emotional_attachment': player.emotional_attachment}
-
-    @staticmethod
-    def error_message(player: Player, values):
-        if 'react_inheritance_why' in values and not _text_length_ok(values.get('react_inheritance_why')):
-            return {'react_inheritance_why': _min_text_error()}
-        if 'react_taxrefund_why' in values and not _text_length_ok(values.get('react_taxrefund_why')):
-            return {'react_taxrefund_why': _min_text_error()}
-
-    @staticmethod
-    def live_method(player: Player, data):
-        _append_keylog_event(player, 'reactions7_keylog', data)
 
 
 class Reactions_8(Page):
