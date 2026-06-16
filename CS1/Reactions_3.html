@@ -1,27 +1,45 @@
-{{ block title }}
-    Reactions to the Scenario - (#2, insert title)
-{{ endblock }}
+{% extends "global/Base.html" %}
+{% load otree static %}
+
+{% block title %}
+    Reactions to the Scenario - (#3, insert title)
+{% endblock %}
 
 {% block styles %}
 <style>
-    .currency-field {
-        position: relative;
-        display: inline-block; /* So the symbol is inside the same container */
-        margin-right: 10px;    /* Spacing between fields if needed */
+    .allocation-table {
+        border-collapse: separate;
+        border-spacing: 20px 0;
     }
 
-    .currency-symbol {
+    .allocation-table th,
+    .allocation-table td {
+        vertical-align: middle;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    .percent-field {
+        position: relative;
+        display: inline-block;
+    }
+
+    .percent-field input {
+        width: 120px;
+        padding-right: 24px;
+    }
+
+    .percent-symbol {
         position: absolute;
-        left: 8px;
+        right: 8px;
         top: 50%;
         transform: translateY(-50%);
-        pointer-events: none; /* Symbol doesn't block typing/clicking */
+        pointer-events: none;
         color: #333;
     }
 
-    .currency-input {
-        padding-left: 20px;
-        width: 100px; /* Adjust as needed */
+.custom-border {
+        border-color: #d6d8db;
     }
 
     .validation-message {
@@ -31,7 +49,6 @@
     }
 </style>
 {% endblock %}
-
 
 {{ block content }}
 <div style="font-size:18px"><br>Reminder about the scenario:<br></div>
@@ -352,6 +369,9 @@
 
 </div>
 
+
+<br>
+
 <strong>
     Now consider ways in which you would react to this additional income, compared to the situation without the payment.
 </strong>
@@ -359,68 +379,85 @@
     Note that 'spend/spending' refers to expenses for goods (like cars or clothes) and services (like vacations or education), whereas 'save/saving' refers to payments related to investments (e.g., into savings accounts, funds, or other ways to build wealth) and borrowing (like mortgages, credit lines, or other debt).
 </div>
 
-<div style="margin-top: 20px;">
-    How much would you change your total spending for each of the time periods below as a reaction to the scenario? <br>
-</div>
-<div style="margin-top: 5px;">
-    Note: If the scenario would make you spend more in a given period, please type a positive amount.
-    Conversely, type a negative amount if the scenario would make you spend less.
-    Type zero (0) if the scenario would not affect your spending in a given period.
+<div style="margin-top: 30px;">
+    Please estimate what fraction (in %) of your change in spending would go towards each of these categories in the respective years:
 </div>
 
-<!-- YEAR 1 -->
-<div style="display: flex; align-items: center; margin-top: 15px;">
-    <label for="id_react_yr1" style="margin-right: 10px;">
-        Year 1 from now:
-    </label>
-    {{ form.react_yr1 }}
-</div>
-{% formfield_errors 'react_yr1' %}
+<table class="allocation-table" style="margin-top: 15px;">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Years 1 and 2</th>
+            <th>Years 3 and 4</th>
+            <th>Rest of your life</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row_name in react5_row_order %}
+            {% if row_name == 'durable' %}
+                <tr>
+                    <td>Durable goods (e.g., cars, furniture, jewelry, etc.)</td>
+                    <td>
+                        <div class="percent-field">
+                            {{ form.react_durable_yr1 }}
+                            <span class="percent-symbol">%</span>
+                        </div>
+                        {% formfield_errors 'react_durable_yr1' %}
+                    </td>
+                    <td>
+                        <div class="percent-field">
+                            {{ form.react_durable_yr2 }}
+                            <span class="percent-symbol">%</span>
+                        </div>
+                        {% formfield_errors 'react_durable_yr2' %}
+                    </td>
+                    <td>
+                        <div class="percent-field">
+                            {{ form.react_durable_yr3 }}
+                            <span class="percent-symbol">%</span>
+                        </div>
+                        {% formfield_errors 'react_durable_yr3' %}
+                    </td>
+                </tr>
+            {% elif row_name == 'nondurable_services' %}
+                <tr>
+                    <td>Non-durable goods and services that do not last for a long time (e.g., food, clothes, vacation, etc.)</td>
+                    <td>
+                        <div class="percent-field">
+                            {{ form.react_nondurable_services_yr1 }}
+                            <span class="percent-symbol">%</span>
+                        </div>
+                        {% formfield_errors 'react_nondurable_services_yr1' %}
+                    </td>
+                    <td>
+                        <div class="percent-field">
+                            {{ form.react_nondurable_services_yr2 }}
+                            <span class="percent-symbol">%</span>
+                        </div>
+                        {% formfield_errors 'react_nondurable_services_yr2' %}
+                    </td>
+                    <td>
+                        <div class="percent-field">
+                            {{ form.react_nondurable_services_yr3 }}
+                            <span class="percent-symbol">%</span>
+                        </div>
+                        {% formfield_errors 'react_nondurable_services_yr3' %}
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
 
-<!-- YEAR 2 -->
-<div style="display: flex; align-items: center; margin-top: 15px;">
-    <label for="id_react_yr2" style="margin-right: 10px;">
-        Year 2 from now:
-    </label>
-    {{ form.react_yr2 }}
-</div>
-{% formfield_errors 'react_yr2' %}
+        <tr>
+            <td><strong>Total</strong></td>
+            <td><strong id="totalCol1">0.0% (must be 100% to continue)</strong></td>
+            <td><strong id="totalCol2">0.0% (must be 100% to continue)</strong></td>
+            <td><strong id="totalCol3">0.0% (must be 100% to continue)</strong></td>
+        </tr>
+    </tbody>
+</table>
 
-<!-- YEAR 3 -->
-<div style="display: flex; align-items: center; margin-top: 15px;">
-    <label for="id_react_yr3" style="margin-right: 10px;">
-        Year 3 from now:
-    </label>
-    {{ form.react_yr3 }}
-</div>
-{% formfield_errors 'react_yr3' %}
-
-<!-- YEAR 4 -->
-<div style="display: flex; align-items: center; margin-top: 15px;">
-    <label for="id_react_yr4" style="margin-right: 10px;">
-        Year 4 from now:
-    </label>
-    {{ form.react_yr4 }}
-</div>
-{% formfield_errors 'react_yr4' %}
-
-<!-- AFTER YEAR 4 / Rest of your life -->
-<div style="display: flex; align-items: center; margin-top: 15px;">
-    <label for="id_react_yr5" style="margin-right: 10px;">
-        Rest of your life:
-    </label>
-    {{ form.react_yr5 }}
-</div>
-{% formfield_errors 'react_yr5' %}
-
-<div id="fieldRangeMessage" class="validation-message">
-    Each spending textbox must contain a number from -5000 to +50000.
-    Please change any entries outside this range before continuing.
-</div>
-
-<div id="totalLimitMessage" class="validation-message">
-    Your total change in spending sums up to more than £75 000, i.e., much more than the payment you receive.
-    Please change your responses to stay below a total change of £30 000 in spending.
+<div id="allocationInputMessage" class="validation-message">
+    Please enter a valid number in each percentage box before continuing.
 </div>
 
 <div style="margin-top: 30px;">
@@ -432,160 +469,120 @@
         Skip for testing
     </button>
 {% endif %}
-
-<!-- Warning Modal -->
-<div id="warningModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999;">
-    <div style="background:white; margin:15% auto; padding:30px; width:50%; border-radius:8px; position:relative;">
-        <p id="warningText" style="color:#a94442; font-weight:bold;"></p>
-        <div style="margin-top:20px;">
-            <button type="button" onclick="dismissWarning()" class="btn btn-secondary">Go back and review</button>
-            <button type="button" onclick="proceedAnyway()" class="btn btn-primary" style="margin-left:10px;">Proceed anyway</button>
-        </div>
-    </div>
-</div>
-
 {% endblock %}
 
 {% block scripts %}
 <script>
-    const MIN_SPEND = -5000;
-    const MAX_SPEND = 50000;
-    const MAX_TOTAL = 75000;
-    const PAYMENT_AMOUNT = 50000;
+let updateAllocationState = function () {};
 
-    let allowSubmit = false;
-
+document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('form') || document.querySelector('form');
     if (form) {
         form.setAttribute('novalidate', 'novalidate');
-        form.addEventListener('submit', function(e) {
-            if (allowSubmit) return;
-
-            const total = getTotal();
-            const zero = allZero();
-
-            let warningNeeded = false;
-            let message = '';
-
-            if (zero) {
-                warningNeeded = true;
-                message = 'You state that the payment will not affect your spending at any point in your life. ' +
-                    'Note that this implies you intend to either reduce your salary (e.g., by working less) ' +
-                    'as a reaction to the payment, or leave the payment (and any interest on it) as an inheritance.';
-            } else if (total > 0 && total < PAYMENT_AMOUNT) {
-                warningNeeded = true;
-                const shortfall = PAYMENT_AMOUNT - total;
-                message = `You intend to increase spending by £${shortfall.toLocaleString()} less than the amount of the payment. ` +
-                    'Note that this implies you intend to either reduce your salary (e.g., by working less) ' +
-                    'as a reaction to the payment, or leave the payment (and any interest on it) as an inheritance.';
-            }
-
-            if (warningNeeded) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                document.getElementById('warningText').innerText = message;
-                document.getElementById('warningModal').style.display = 'block';
-            }
-        });
     }
 
-    function dismissWarning() {
-        document.getElementById('warningModal').style.display = 'none';
-    }
+    const target = Number('{{ allocation_target }}');
+    const tolerance = Number('{{ allocation_tolerance }}');
+    const inputMessage = document.getElementById('allocationInputMessage');
 
-    function proceedAnyway() {
-        allowSubmit = true;
-        document.getElementById('warningModal').style.display = 'none';
-        document.querySelector('.otree-btn-next').click();
-    }
+    const columns = [
+        {
+            totalEl: document.getElementById('totalCol1'),
+            fields: ['id_react_durable_yr1', 'id_react_nondurable_services_yr1'],
+        },
+        {
+            totalEl: document.getElementById('totalCol2'),
+            fields: ['id_react_durable_yr2', 'id_react_nondurable_services_yr2'],
+        },
+        {
+            totalEl: document.getElementById('totalCol3'),
+            fields: ['id_react_durable_yr3', 'id_react_nondurable_services_yr3'],
+        },
+    ];
 
-    function sendKeylogEvent(fieldName, event, inputElem) {
-        liveSend({
-            field: fieldName,
-            t: performance.now(),
-            inputType: event.inputType || null,
-            data: event.data || null,
-            len: inputElem.value.length,
-        });
-    }
+    const fieldIds = []
+        .concat(columns[0].fields, columns[1].fields, columns[2].fields);
 
-    function parseNumericValue(inputElem) {
-        const raw = inputElem.value.trim();
-        if (raw === '') return null;
-        const parsed = Number(raw);
-        if (!Number.isFinite(parsed)) return null;
+    const fields = fieldIds
+        .map(function (id) { return document.getElementById(id); })
+        .filter(function (el) { return !!el; });
+
+    fields.forEach(function (field) {
+        field.setAttribute('step', '0.1');
+    });
+
+    function parseFieldValue(field) {
+        const raw = field.value.trim();
+        if (raw === '') {
+            return null;
+        }
+        const parsed = Number(raw.replace(',', '.'));
+        if (!Number.isFinite(parsed)) {
+            return null;
+        }
         return parsed;
     }
 
-    function getTotal() {
-        let total = 0;
-        fields.forEach(function (fieldName) {
-            const inputElem = document.getElementById(`id_${fieldName}`);
-            if (!inputElem) return;
-            const value = parseNumericValue(inputElem);
-            if (value !== null) total += value;
-        });
-        return total;
-    }
+    updateAllocationState = function () {
+        let allInputsNumeric = true;
 
-    function allZero() {
-        return fields.every(function (fieldName) {
-            const inputElem = document.getElementById(`id_${fieldName}`);
-            if (!inputElem) return true;
-            const value = parseNumericValue(inputElem);
-            return value === null || value === 0;
-        });
-    }
+        columns.forEach(function (column) {
+            let total = 0;
+            let allPresent = true;
 
-    function updateNextButtonState() {
-        const rangeMessage = document.getElementById('fieldRangeMessage');
-        const totalMessage = document.getElementById('totalLimitMessage');
+            column.fields.forEach(function (id) {
+                const field = document.getElementById(id);
+                const value = field ? parseFieldValue(field) : null;
 
-        let total = 0;
-        let allPresent = true;
-        let outOfRange = false;
+                if (value === null) {
+                    allPresent = false;
+                    allInputsNumeric = false;
+                    return;
+                }
+                total += value;
+            });
 
-        fields.forEach(function (fieldName) {
-            const inputElem = document.getElementById(`id_${fieldName}`);
-            if (!inputElem) { allPresent = false; return; }
-            const value = parseNumericValue(inputElem);
-            if (value === null) { allPresent = false; return; }
-            if (value < MIN_SPEND || value > MAX_SPEND) outOfRange = true;
-            total += value;
+            const validTotal = allPresent && Math.abs(total - target) <= tolerance;
+
+            if (column.totalEl) {
+                column.totalEl.textContent = total.toFixed(1) + '% (must be 100% to continue)';
+                column.totalEl.style.color = validTotal ? '#1f7a1f' : '#a94442';
+            }
         });
 
-        if (rangeMessage) rangeMessage.style.display = outOfRange ? 'block' : 'none';
-        const totalTooHigh = allPresent && !outOfRange && total > MAX_TOTAL;
-        if (totalMessage) totalMessage.style.display = totalTooHigh ? 'block' : 'none';
-    }
+        if (inputMessage) {
+            inputMessage.style.display = allInputsNumeric ? 'none' : 'block';
+        }
+    };
 
-    let fields = ['react_yr1', 'react_yr2', 'react_yr3', 'react_yr4', 'react_yr5'];
-
-    fields.forEach(field => {
-        let inputSelector = `#id_${field}`;
-        $(inputSelector).wrap('<div class="currency-field"></div>');
-        $(inputSelector).addClass('currency-input');
-        $(inputSelector).attr('min', MIN_SPEND);
-        $(inputSelector).attr('max', MAX_SPEND);
-        $(inputSelector).attr('step', '1');
-        $('<span class="currency-symbol">{{ C.DEFAULT_CURRENCY_SYMBOL }}</span>').insertBefore(inputSelector);
+    fields.forEach(function (field) {
+        field.addEventListener('input', updateAllocationState);
     });
 
-    fields.forEach(function (fieldName) {
-        const inputElem = document.getElementById(`id_${fieldName}`);
-        if (inputElem) inputElem.addEventListener('input', updateNextButtonState);
-    });
-    updateNextButtonState();
+    updateAllocationState();
+});
 
-    function skipPage() {
-        document.getElementById('id_react_yr1').value = '0';
-        document.getElementById('id_react_yr2').value = '0';
-        document.getElementById('id_react_yr3').value = '0';
-        document.getElementById('id_react_yr4').value = '0';
-        document.getElementById('id_react_yr5').value = '0';
-        allowSubmit = true;
-        updateNextButtonState();
+// For skipping (testing only)
+function skipPage() {
+    let values = {
+        id_react_durable_yr1: '50.0',
+        id_react_durable_yr2: '50.0',
+        id_react_durable_yr3: '50.0',
+        id_react_nondurable_services_yr1: '50.0',
+        id_react_nondurable_services_yr2: '50.0',
+        id_react_nondurable_services_yr3: '50.0',
+    };
+
+    Object.keys(values).forEach(function (id) {
+        let field = document.getElementById(id);
+        if (field) {
+            field.value = values[id];
+        }
+    });
+
+    if (typeof updateAllocationState === 'function') {
+        updateAllocationState();
     }
+}
 </script>
 {% endblock %}
-

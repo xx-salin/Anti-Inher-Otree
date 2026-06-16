@@ -118,7 +118,7 @@ class Player(BasePlayer):
     # INSTRUCTIONS_WELCOMESCREEN
     browser_first = models.CharField()
     # INTRODUCTORY SURVEY
-    survey3_fieldorder = models.StringField()
+    survey2_fieldorder = models.StringField()
     # ------------------------------------------------------------------------------------------------------------
     # ---------------------------------------- INTRODUCTORY SURVEY --------------------------------------------
     # ------------------------------------------------------------------------------------------------------------
@@ -130,7 +130,7 @@ class Player(BasePlayer):
         label = "What percentage of your disposable income (your income after taxes) do you save in an average month?",
         min=0, max=100, blank=False)
 
-    Survey3_DisposableIncome = models.IntegerField(
+    survey2_DisposableIncome = models.IntegerField(
         label="Your disposable income now",
         widget=widgets.RadioSelect,
         choices=[
@@ -141,7 +141,7 @@ class Player(BasePlayer):
             [5, 'Very Important']
         ]
     )
-    Survey3_NetWealth = models.IntegerField(
+    survey2_NetWealth = models.IntegerField(
         label="Your current net wealth (your wealth minus any debt, e.g., credit card debt or mortgages)",
         widget=widgets.RadioSelect,
         choices=[
@@ -153,7 +153,7 @@ class Player(BasePlayer):
         ]
     )
     """
-    Survey3_UncertaintyOfNetWealth = models.IntegerField(
+    survey2_UncertaintyOfNetWealth = models.IntegerField(
         label="Uncertainty about the future value of your net wealth (e.g., due to changes in housing or stock prices)",
         widget=widgets.RadioSelect,
         choices=[
@@ -164,7 +164,7 @@ class Player(BasePlayer):
             [5, 'Very Important']
         ]
     ) """
-    Survey3_FutureIncome = models.IntegerField(
+    survey2_FutureIncome = models.IntegerField(
         label="Your expected regular future income until retirement (e.g., from your job).",
         widget=widgets.RadioSelect,
         choices=[
@@ -176,7 +176,7 @@ class Player(BasePlayer):
         ]
     )
     """
-    Survey3_UncertaintyOfFutureIncome = models.IntegerField(
+    survey2_UncertaintyOfFutureIncome = models.IntegerField(
         label="Uncertainty about your regular future income until retirement (e.g. because of unemployment)",
         widget=widgets.RadioSelect,
         choices=[
@@ -187,7 +187,7 @@ class Player(BasePlayer):
             [5, 'Very Important']
         ]
     ) """
-    Survey3_RetirementIncome = models.IntegerField(
+    survey2_RetirementIncome = models.IntegerField(
         label="Your expected regular income after retirement (e.g., from pensions and your retirement savings).",
         widget=widgets.RadioSelect,
         choices=[
@@ -199,7 +199,7 @@ class Player(BasePlayer):
         ]
     )
     """
-    Survey3_UncertaintyOfRetirementIncome = models.IntegerField(
+    survey2_UncertaintyOfRetirementIncome = models.IntegerField(
         label="Uncertainty about your income after retirement (e.g. because of political uncertainty and risky investment returns)",
         widget=widgets.RadioSelect,
         choices=[
@@ -210,7 +210,7 @@ class Player(BasePlayer):
             [5, 'Very Important']
         ]
     ) """
-    Survey3_IrregularPayments = models.IntegerField(
+    survey2_IrregularPayments = models.IntegerField(
         label="Expected gifts, inheritances, and irregular payments from others.",
         widget=widgets.RadioSelect,
         choices=[
@@ -221,7 +221,7 @@ class Player(BasePlayer):
             [5, 'Very Important']
         ]
     )
-    """ Survey3_UncertaintyOfIrregularPayments = models.IntegerField(
+    """ survey2_UncertaintyOfIrregularPayments = models.IntegerField(
         label="Uncertainty about expected irregular payments from others (e.g. gifts or inheritances)",
         widget=widgets.RadioSelect,
         choices=[
@@ -232,7 +232,7 @@ class Player(BasePlayer):
             [5, 'Very Important']
         ]
     ) """
-    Survey3_InterestRates = models.IntegerField(
+    survey2_InterestRates = models.IntegerField(
         label="Interest rates or the return on savings (including stocks and changes in housing prices).",
         widget=widgets.RadioSelect,
         choices=[
@@ -244,7 +244,7 @@ class Player(BasePlayer):
         ]
     )
     """
-    Survey3_UncertaintyOfInterestRates = models.IntegerField(
+    survey2_UncertaintyOfInterestRates = models.IntegerField(
         label="Uncertainty about interest rates or returns",
         widget=widgets.RadioSelect,
         choices=[
@@ -255,7 +255,7 @@ class Player(BasePlayer):
             [5, 'Very Important']
         ]
     ) """
-    Survey3_Inflation = models.IntegerField(
+    survey2_Inflation = models.IntegerField(
         label="Inflation",
         widget=widgets.RadioSelect,
         choices=[
@@ -266,7 +266,7 @@ class Player(BasePlayer):
             [5, 'Very Important']
         ]
     )
-    Survey3_CreditAccess = models.IntegerField(
+    survey2_CreditAccess = models.IntegerField(
         label="Your ability to access credit (if needed)",
         widget=widgets.RadioSelect,
         choices=[
@@ -277,7 +277,7 @@ class Player(BasePlayer):
             [5, 'Very Important']
         ]
     )
-    Survey3_Caution = models.IntegerField(
+    survey2_Caution = models.IntegerField(
         label="Caution (preference to avoid risk)",
         widget=widgets.RadioSelect,
         choices=[
@@ -288,7 +288,7 @@ class Player(BasePlayer):
             [5, 'Very Important']
         ]
     )
-    Survey3_Impatience = models.IntegerField(
+    survey2_Impatience = models.IntegerField(
         label="Impatience (preference to spend more now rather than later)",
         widget=widgets.RadioSelect,
         choices=[
@@ -299,7 +299,7 @@ class Player(BasePlayer):
             [5, 'Very Important']
         ]
     )
-    Survey3_Other = models.IntegerField(
+    survey2_Other = models.IntegerField(
         label="Other (please list below in the text box)",
         widget=widgets.RadioSelect,
         blank=True,
@@ -311,48 +311,14 @@ class Player(BasePlayer):
             [5, 'Very Important']
         ]
     )
-    Survey3_TextBox = models.StringField(
+    survey2_TextBox = models.StringField(
         label = "Please list other relevant factors (if any) here:",
         blank=True)
-
-    scenario_warning = models.IntegerField(initial=0) # 1 = pressed confirm before 10 seconds, 0 = waited 10 seconds or pressed cancel
-    # COMPREHENSION TEST
-    comp_q1_timing = models.IntegerField(
-        label='When is the payment made?',
-        choices=[
-            [1, 'Today'],
-            [2, 'In 2 years'],
-            [3, 'In 4 years'],
-        ],
-        widget=widgets.RadioSelect,
-    )
-
-    comp_q2_amount = models.IntegerField(
-        label='How large is the payment?',
-        choices=[
-            [1, f'{C.DEFAULT_CURRENCY_SYMBOL}5 000'],
-            [2, f'{C.DEFAULT_CURRENCY_SYMBOL}25 000'],
-            [3, f'{C.DEFAULT_CURRENCY_SYMBOL}50 000'],
-        ],
-        widget=widgets.RadioSelect,
-    )
-
-    comp_q3_reason = models.IntegerField(
-        label='Why are you receiving the payment?',
-        choices=[
-            [1, 'Salary'],
-            [2, 'Inheritance'],
-            [3, 'Tax refund'],
-        ],
-        widget=widgets.RadioSelect,
-    )
-
-    comp_failed_attempts = models.IntegerField(initial=0)
-    comp_wrong_history = models.LongStringField(initial='')
+    
 
 
     
-    # PreScenario Demographics:
+    # Survey 3 (Pre-Dem):
     Demographics_Household_Income = models.IntegerField(
         label='Which of the following best describes your total household income last year?',
         widget=widgets.RadioSelect(),
@@ -453,15 +419,50 @@ class Player(BasePlayer):
         ])
 
 
+    scenario_warning = models.IntegerField(initial=0) # 1 = pressed confirm before 10 seconds, 0 = waited 10 seconds or pressed cancel
+
+    # COMPREHENSION TEST
+    comp_q1_timing = models.IntegerField(
+        label='When is the payment made?',
+        choices=[
+            [1, 'Today'],
+            [2, 'In 2 years'],
+            [3, 'In 4 years'],
+        ],
+        widget=widgets.RadioSelect,
+    )
+
+    comp_q2_amount = models.IntegerField(
+        label='How large is the payment?',
+        choices=[
+            [1, f'{C.DEFAULT_CURRENCY_SYMBOL}5 000'],
+            [2, f'{C.DEFAULT_CURRENCY_SYMBOL}25 000'],
+            [3, f'{C.DEFAULT_CURRENCY_SYMBOL}50 000'],
+        ],
+        widget=widgets.RadioSelect,
+    )
+
+    comp_q3_reason = models.IntegerField(
+        label='Why are you receiving the payment?',
+        choices=[
+            [1, 'Salary'],
+            [2, 'Inheritance'],
+            [3, 'Tax refund'],
+        ],
+        widget=widgets.RadioSelect,
+    )
+
+    comp_failed_attempts = models.IntegerField(initial=0)
+    comp_wrong_history = models.LongStringField(initial='')
 
 
-
+    
     # ------------------------------------------------------------------------------------------------------------
     # --------------------------------------------- REACTIONS --------------------------------------------
     # ------------------------------------------------------------------------------------------------------------
 
 
-    # Reactions_2
+    # Reactions_1
     react3 = models.LongStringField(
         label='How will you adjust your behavior in Year 1 and Year 2 (if at all)? Please consider your spending and saving, as well as your career plans (e.g., would you work more or less hours, or retire).', blank=False)
 
@@ -481,7 +482,7 @@ class Player(BasePlayer):
     react8 = models.LongStringField(
         label='How does this scenario affect your career plans for the rest of your life after Year 4 (if at all, e.g., would you work more or less hours, or retire)?', blank=False)
     """
-    # Reactions_3
+    # Reactions_2
     react_yr1 = models.IntegerField(
         label='Year 1 from now:', min=C.REACTION_SPEND_MIN, max=C.REACTION_SPEND_MAX, blank=False)
 
@@ -497,11 +498,15 @@ class Player(BasePlayer):
     react_yr5 = models.IntegerField(
         label='Total rest of your life:', min=C.REACTION_SPEND_MIN, max=C.REACTION_SPEND_MAX, blank=False)
 
+
+    # Reactions_2_Followup_B
     react9 = models.LongStringField(
         label='Please explain briefly why you would adjust your spending like this over the upcoming years:', blank=True)
     
-    # Reactions_3 Follow-up
+    # Reactions_2_Follow-up_A1
     react_followup1 = models.LongStringField(blank=True, label='You expressed that the future payment does not affect your spending plans before you receive the payment but that you will increase spending after the payment. Briefly explain why.')
+
+    # Reactions_2_Follow-up_A2
     react_followup2_i = models.IntegerField(blank=True, min=1, max=5, label='I keep future payments such as this one in a different budget than the budget that I use to determine my current spending')
     react_followup2_ii = models.IntegerField(blank=True, min=1, max=5, label='It would be morally wrong to spend the money before I receive it')
     react_followup2_iii = models.IntegerField(blank=True, min=1, max=5, label='I wouldn\'t know how to increase spending using the money I receive in the future')
@@ -511,7 +516,7 @@ class Player(BasePlayer):
     react_followup2_other = models.LongStringField(blank=True, label='Other reason. Please specify:')
     react_followup2_order = models.LongStringField(blank=True)
 
-    # Reactions_5
+    # Reactions_3
     react_durable_yr1 = models.FloatField(
         label='Durable goods (e.g., cars, furniture, jewelry, etc.):', min=None, blank=False)
     react_durable_yr2 = models.FloatField(min=None, blank=False)
@@ -522,7 +527,28 @@ class Player(BasePlayer):
     react_nondurable_services_yr2 = models.FloatField(min=None, blank=False)
     react_nondurable_services_yr3 = models.FloatField(min=None, blanok=False)
 
-    # Reactions_6
+
+
+    # Reactions_4
+    react_alloc_self_yr1 = models.FloatField(label='yourself', min=0, max=100, blank=False)
+    react_alloc_self_yr2 = models.FloatField(min=0, max=100, blank=False)
+    react_alloc_self_yr3 = models.FloatField(min=0, max=100, blank=False)
+
+    react_alloc_parents_yr1 = models.FloatField(label='your parents', min=0, max=100, blank=False)
+    react_alloc_parents_yr2 = models.FloatField(min=0, max=100, blank=False)
+    react_alloc_parents_yr3 = models.FloatField(min=0, max=100, blank=False)
+
+    react_alloc_other_family_yr1 = models.FloatField(label='other family (e.g., children) or friends', min=0, max=100, blank=False)
+    react_alloc_other_family_yr2 = models.FloatField(min=0, max=100, blank=False)
+    react_alloc_other_family_yr3 = models.FloatField(min=0, max=100, blank=False)
+
+    react_alloc_others_yr1 = models.FloatField(label='others (e.g., donations to a charity)', min=0, max=100, blank=False)
+    react_alloc_others_yr2 = models.FloatField(min=0, max=100, blank=False)
+    react_alloc_others_yr3 = models.FloatField(min=0, max=100, blank=False)
+
+
+
+    # Reactions_5
     react20 = models.LongStringField(
         label='How (if at all) does your emotional response to this scenario affect your spending decisions?', blank=False)
 
@@ -597,7 +623,7 @@ class Player(BasePlayer):
 
 
 
-    # Reactions_8
+    # Reactions_6
     react_uncertainty_timing = models.IntegerField(
         label='Did you assume there is any uncertainty about the timing of the payment?',
         widget=widgets.RadioSelect(),
@@ -619,27 +645,6 @@ class Player(BasePlayer):
             [4, 'Uncertain'],
             [5, 'Very uncertain'],
         ])
-
-    # Reactions_9
-    react_alloc_self_yr1 = models.FloatField(label='yourself', min=0, max=100, blank=False)
-    react_alloc_self_yr2 = models.FloatField(min=0, max=100, blank=False)
-    react_alloc_self_yr3 = models.FloatField(min=0, max=100, blank=False)
-
-    react_alloc_parents_yr1 = models.FloatField(label='your parents', min=0, max=100, blank=False)
-    react_alloc_parents_yr2 = models.FloatField(min=0, max=100, blank=False)
-    react_alloc_parents_yr3 = models.FloatField(min=0, max=100, blank=False)
-
-    react_alloc_other_family_yr1 = models.FloatField(label='other family (e.g., children) or friends', min=0, max=100, blank=False)
-    react_alloc_other_family_yr2 = models.FloatField(min=0, max=100, blank=False)
-    react_alloc_other_family_yr3 = models.FloatField(min=0, max=100, blank=False)
-
-    react_alloc_others_yr1 = models.FloatField(label='others (e.g., donations to a charity)', min=0, max=100, blank=False)
-    react_alloc_others_yr2 = models.FloatField(min=0, max=100, blank=False)
-    react_alloc_others_yr3 = models.FloatField(min=0, max=100, blank=False)
-
-
-
-
 
 
     # ------------------------------------------------------------------------------------------------------------
@@ -778,7 +783,7 @@ class Player(BasePlayer):
             [5, 'Strongly agree'],
         ])
 
-    # Demographics 4:
+    # Demographics 3:
     interest_rate_inflation = models.IntegerField(
         label='Imagine that the interest rate on your savings account was 1% per year and inflation was 2% per year. After 1 year, would you be able to buy:',
         widget=widgets.RadioSelect,
@@ -1491,20 +1496,20 @@ class Survey_1(Page):
         player.spend_save = player.participant.vars['spend_save']
 
 
-class Survey_3(Page):
+class Survey_2(Page):
     form_model = 'player'
     form_fields = [
-        'Survey3_DisposableIncome',
-        'Survey3_NetWealth',
-        'Survey3_FutureIncome',
-        'Survey3_RetirementIncome',
-        'Survey3_IrregularPayments',
-        'Survey3_InterestRates',
-        'Survey3_Inflation',
-        'Survey3_CreditAccess',
-        'Survey3_Caution',
-        'Survey3_Impatience',
-        'Survey3_TextBox']
+        'survey2_DisposableIncome',
+        'survey2_NetWealth',
+        'survey2_FutureIncome',
+        'survey2_RetirementIncome',
+        'survey2_IrregularPayments',
+        'survey2_InterestRates',
+        'survey2_Inflation',
+        'survey2_CreditAccess',
+        'survey2_Caution',
+        'survey2_Impatience',
+        'survey2_TextBox']
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -1512,23 +1517,23 @@ class Survey_3(Page):
             player.participant.vars['spend_save'] = random.randint(1, 2)  # spend = 1; save = 2
 
         # Randomize the order of the fields, excluding textbox
-        static_fields = ['Survey3_TextBox']
+        static_fields = ['survey2_TextBox']
         randomized_fields = random.sample(
-            [field for field in Survey_3.form_fields if field not in static_fields],
-            len(Survey_3.form_fields) - len(static_fields))
+            [field for field in Survey_2.form_fields if field not in static_fields],
+            len(Survey_2.form_fields) - len(static_fields))
         player.participant.vars['randomized_fields'] = randomized_fields
 
-        survey3_labels = {
-            'Survey3_DisposableIncome': "Your disposable income now",
-            'Survey3_NetWealth': "Your current net wealth (your wealth minus any debt, e.g., credit card debt or mortgages)",
-            'Survey3_FutureIncome': "Your expected regular future income until retirement (e.g., from your job)",
-            'Survey3_RetirementIncome': "Your expected regular income after retirement (e.g., from pensions and your retirement savings)",
-            'Survey3_IrregularPayments': "Expected gifts, inheritances, and irregular payments from others",
-            'Survey3_InterestRates': "Interest rates or the return on savings (including stocks and changes in housing prices)",
-            'Survey3_Inflation': "Inflation",
-            'Survey3_CreditAccess': "Your ability to access credit (if needed)",
-            'Survey3_Caution': "Caution (preference to avoid risk)",
-            'Survey3_Impatience': "Impatience (preference to spend more now rather than later)",
+        survey2_labels = {
+            'survey2_DisposableIncome': "Your disposable income now",
+            'survey2_NetWealth': "Your current net wealth (your wealth minus any debt, e.g., credit card debt or mortgages)",
+            'survey2_FutureIncome': "Your expected regular future income until retirement (e.g., from your job)",
+            'survey2_RetirementIncome': "Your expected regular income after retirement (e.g., from pensions and your retirement savings)",
+            'survey2_IrregularPayments': "Expected gifts, inheritances, and irregular payments from others",
+            'survey2_InterestRates': "Interest rates or the return on savings (including stocks and changes in housing prices)",
+            'survey2_Inflation': "Inflation",
+            'survey2_CreditAccess': "Your ability to access credit (if needed)",
+            'survey2_Caution': "Caution (preference to avoid risk)",
+            'survey2_Impatience': "Impatience (preference to spend more now rather than later)",
         }
         likert_choices = [
             [1, 'Not important'],
@@ -1538,26 +1543,26 @@ class Survey_3(Page):
             [5, 'Very Important'],
         ]
 
-        survey3_rows = []
+        survey2_rows = []
         for field_name in randomized_fields:
-            survey3_rows.append(dict(
+            survey2_rows.append(dict(
                 name=field_name,
-                label=survey3_labels.get(field_name, field_name),
+                label=survey2_labels.get(field_name, field_name),
                 choices=likert_choices,
                 value=player.field_maybe_none(field_name),
             ))
 
         return {'spend_save': player.participant.vars['spend_save'],
                 'randomized_fields': randomized_fields,
-                'survey3_rows': survey3_rows,
+                'survey2_rows': survey2_rows,
                 'testing': player.session.config["testing"]}
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
-        player.survey3_fieldorder = ', '.join(player.participant.vars['randomized_fields'])
+        player.survey2_fieldorder = ', '.join(player.participant.vars['randomized_fields'])
 
 
-class PreScenario_Demographics(Page):
+class Survey_3(Page):
     form_model = 'player'
     form_fields = [
         "Demographics_Household_Income",
@@ -1992,7 +1997,7 @@ class ComprehensionTest(Page):
 # ------------------------------------------------------------------------------------------------------------
 
 
-class Reactions_2(Page):
+class Reactions_1(Page):
     form_model = 'player'
     form_fields = ['react3', 'react4', 'react5']
 
@@ -2022,7 +2027,7 @@ class Reactions_2(Page):
     def live_method(player: Player, data):
         _append_keylog_event(player, 'reactions2_keylog', data)
 
-class Reactions_3(Page):
+class Reactions_2(Page):
     form_model = 'player'
     form_fields = ['react_yr1', 'react_yr2', 'react_yr3', 'react_yr4', 'react_yr5']
 
@@ -2075,7 +2080,7 @@ class Reactions_3(Page):
 
 ##
 
-class Reactions_3_Followup1a(Page):
+class Reactions_2_Followup_B(Page):
     form_model = 'player'
     form_fields = ['react9']
 
@@ -2125,7 +2130,7 @@ class Reactions_3_Followup1a(Page):
 
 
 
-class Reactions_3_Followup1(Page):
+class Reactions_2_Followup_A1(Page):
     form_model = 'player'
     form_fields = ['react_followup1']
 
@@ -2169,7 +2174,7 @@ class Reactions_3_Followup1(Page):
 
 
 
-class Reactions_3_Followup2(Page):
+class Reactions_2_Followup_A2(Page):
     form_model = 'player'
     form_fields = [
         'react_followup2_i',
@@ -2273,16 +2278,7 @@ class Reactions_3_Followup2(Page):
     
 
 
-
-##
-
-
-
-
-
-
-
-class Reactions_5(Page):
+class Reactions_3(Page):
     form_model = 'player'
     form_fields = [
         'react_durable_yr1', 'react_durable_yr2', 'react_durable_yr3',
@@ -2374,69 +2370,9 @@ class Reactions_5(Page):
 
         return errors if errors else None
 
-class Reactions_7(Page):
-    form_model = 'player'
-    form_fields = [
-        'react20',
-        'react21_yr1', 'react21_yr2', 'react21_yr3',
-        'react22_yr1', 'react22_yr2', 'react22_yr3',
-        'react23_yr1', 'react23_yr2', 'react23_yr3', 
-        'react23_why']
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        if 'variation' not in player.participant.vars:
-            player.participant.vars['variation'] = 'Not Set'
-        payment_position, payment_label = get_timeline_vars(player)
-        return {'testing': player.session.config["testing"],
-                'group': player.participant.vars['assigned_group'],
-                'variation': player.participant.vars['variation'],
-                'info_subtype': player.info_subtype,
-                'payment_position':payment_position,
-                'payment_label': payment_label,
-                'arrow_left_percent': payment_position*25}
-
-    @staticmethod
-    def error_message(player, values):
-        errors = {}
-        min_msg = 'Please provide an explanation when this is required.'
-
-        # For react23 group:
-        if (values.get("react23_yr1") == 1 or
-                values.get("react23_yr2") == 1 or
-                values.get("react23_yr3") == 1):
-            if not _text_length_ok(values.get("react23_why")):
-                errors["react23_why"] = min_msg
-
-        return errors if errors else None
-
-    @staticmethod
-    def live_method(player: Player, data):
-        _append_keylog_event(player, 'reactions6_keylog', data)
 
 
-class Reactions_8(Page):
-    form_model = 'player'
-    form_fields = ['react_uncertainty_timing', 'react_uncertainty_amount']
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        if 'variation' not in player.participant.vars:
-            player.participant.vars['variation'] = 'Not Set'
-
-        payment_position, payment_label = get_timeline_vars(player)
-        return {
-            'testing': player.session.config["testing"],
-            'group': player.participant.vars['assigned_group'],
-            'variation': player.participant.vars['variation'],
-            'info_subtype': player.info_subtype,
-            'payment_position': payment_position,
-            'payment_label': payment_label,
-            'arrow_left_percent': payment_position * 25,
-        }
-
-
-class Reactions_6(Page):
+class Reactions_4(Page):
     form_model = 'player'
     form_fields = [
         'react_alloc_self_yr1', 'react_alloc_self_yr2', 'react_alloc_self_yr3',
@@ -2506,6 +2442,70 @@ class Reactions_6(Page):
     def is_displayed(player: Player):
         fields = [player.react_yr1, player.react_yr2, player.react_yr3, player.react_yr4, player.react_yr5]
         return not all(f is f == 0 for f in fields)
+
+
+
+class Reactions_5(Page):
+    form_model = 'player'
+    form_fields = [
+        'react20',
+        'react21_yr1', 'react21_yr2', 'react21_yr3',
+        'react22_yr1', 'react22_yr2', 'react22_yr3',
+        'react23_yr1', 'react23_yr2', 'react23_yr3', 
+        'react23_why']
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        if 'variation' not in player.participant.vars:
+            player.participant.vars['variation'] = 'Not Set'
+        payment_position, payment_label = get_timeline_vars(player)
+        return {'testing': player.session.config["testing"],
+                'group': player.participant.vars['assigned_group'],
+                'variation': player.participant.vars['variation'],
+                'info_subtype': player.info_subtype,
+                'payment_position':payment_position,
+                'payment_label': payment_label,
+                'arrow_left_percent': payment_position*25}
+
+    @staticmethod
+    def error_message(player, values):
+        errors = {}
+        min_msg = 'Please provide an explanation when this is required.'
+
+        # For react23 group:
+        if (values.get("react23_yr1") == 1 or
+                values.get("react23_yr2") == 1 or
+                values.get("react23_yr3") == 1):
+            if not _text_length_ok(values.get("react23_why")):
+                errors["react23_why"] = min_msg
+
+        return errors if errors else None
+
+    @staticmethod
+    def live_method(player: Player, data):
+        _append_keylog_event(player, 'reactions6_keylog', data)
+
+
+class Reactions_6(Page):
+    form_model = 'player'
+    form_fields = ['react_uncertainty_timing', 'react_uncertainty_amount']
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        if 'variation' not in player.participant.vars:
+            player.participant.vars['variation'] = 'Not Set'
+
+        payment_position, payment_label = get_timeline_vars(player)
+        return {
+            'testing': player.session.config["testing"],
+            'group': player.participant.vars['assigned_group'],
+            'variation': player.participant.vars['variation'],
+            'info_subtype': player.info_subtype,
+            'payment_position': payment_position,
+            'payment_label': payment_label,
+            'arrow_left_percent': payment_position * 25,
+        }
+
 
 # ------------------------------------------------------------------------------------------------------------
 # ----------------------------------- RESULTS + PARTICIPANT INFORMATION --------------------------------------
@@ -2735,7 +2735,7 @@ class Demographics_2(Page):
         return {'testing': player.session.config["testing"]}
 
 
-class Demographics_4(Page):
+class Demographics_3(Page):
     form_model = 'player'
     form_fields = [
         "interest_rate_inflation",
@@ -2768,7 +2768,7 @@ page_sequence = [
 
     AttentionCheck3_AI, AttentionCheck4_AI, AttentionCheckResult,
 
-    Survey_1, Survey_3, PreScenario_Demographics,
+    Survey_1, Survey_2, Survey_3,
 
     FU_LAR_C, FU_NO_C, PR_LAR_C, PR_NO_C,
     FU_LAR_U, FU_NO_U, PR_LAR_U, PR_NO_U,
@@ -2778,12 +2778,12 @@ page_sequence = [
 
     ComprehensionTest,
 
-    Reactions_2, Reactions_3, Reactions_3_Followup1, Reactions_3_Followup2, Reactions_3_Followup1a, Reactions_5, Reactions_6,
-    Reactions_7, Reactions_8,
+    Reactions_1, Reactions_2, Reactions_2_Followup_A1, Reactions_2_Followup_A2, Reactions_2_Followup_B, Reactions_3, Reactions_4,
+    Reactions_5, Reactions_6,
 
     AttentionCheck1_AI, AttentionCheck2_AI, BotScreening,
 
-    Demographics_1, Inh_Followup_A, Inh_Followup_B, Inh_Followup_C, Inh_Followup_D, Demographics_2, Demographics_4,
+    Demographics_1, Inh_Followup_A, Inh_Followup_B, Inh_Followup_C, Inh_Followup_D, Demographics_2, Demographics_3,
 
     Feedback, LinkToProlific]
 

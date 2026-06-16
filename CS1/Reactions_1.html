@@ -1,7 +1,14 @@
 {{ block title }}
-    Reactions to the Scenario - (#5, insert title)
+    Reactions to the Scenario - (#1, insert title)
 {{ endblock }}
 
+{% block styles %}
+ <style>
+     .custom-border {
+        border-color: #d6d8db;
+    }
+ </style>
+{% endblock %}
 
 
 
@@ -325,131 +332,32 @@
 </div>
 
 
-
 <br>
 
     <strong>
         Now consider ways in which you would react to this additional income, compared to the situation without the payment.
-    </strong>
+        </strong>
     <div>
         Note that 'spend/spending' refers to expenses for goods (like cars or clothes) and services (like vacations or education), whereas 'save/saving' refers to payments related to investments (e.g., into savings accounts, funds, or other ways to build wealth) and borrowing (like mortgages, credit lines, or other debt).
     </div>
+    <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 20px">
+    {{ formfields }}
+         </div>
 
-    <div style="margin-top: 25px;">
-        {{ formfield 'react20' }}
-    </div>
-
-    <div style="margin-top: 40px;">
-        Would <strong>you</strong> think it is morally appropriate to increase spending on yourself for each of the following periods as a reaction? <br>
-        <div style="display: inline-flex; align-items: center; margin-top: 35px">
-            <label style="margin-right: 10px;">
-                {{ form.react21_yr1.label }}
-            </label>
-            {{ form.react21_yr1 }}
-        </div> <br>
-        {% formfield_errors 'react21_yr1' %}
-
-        <div style="display: inline-flex; align-items: center; margin-top: 30px">
-            <label style="margin-right: 10px;">
-                {{ form.react21_yr2.label }}
-            </label>
-            {{ form.react21_yr2 }}
-        </div> <br>
-        {% formfield_errors 'react21_yr2' %}
-
-        <div style="display: inline-flex; align-items: center; margin-top: 30px">
-            <label style="margin-right: 20px;">
-                {{ form.react21_yr3.label }}
-            </label>
-            {{ form.react21_yr3 }}
-        </div>
-        {% formfield_errors 'react21_yr3' %}
-
-    </div>
-
-    <div style="margin-top: 50px;">
-        Would <strong>your parents</strong> think it is morally appropriate to increase spending on yourself for each of the following periods as a reaction? <br>
-        <div style="display: inline-flex; align-items: center; margin-top: 35px">
-            <label style="margin-right: 10px;">
-                {{ form.react22_yr1.label }}
-            </label>
-            {{ form.react22_yr1 }}
-        </div> <br>
-        {% formfield_errors 'react22_yr1' %}
-
-        <div style="display: inline-flex; align-items: center; margin-top: 30px">
-            <label style="margin-right: 10px;">
-                {{ form.react22_yr2.label }}
-            </label>
-            {{ form.react22_yr2 }}
-        </div> <br>
-        {% formfield_errors 'react22_yr2' %}
-
-        <div style="display: inline-flex; align-items: center; margin-top: 30px">
-            <label style="margin-right: 20px;">
-                {{ form.react22_yr3.label }}
-            </label>
-            {{ form.react22_yr3 }}
-        </div>
-        {% formfield_errors 'react22_yr3' %}
-
-    </div>
-
-
-    <div style="margin-top: 50px;">
-        Would <strong>others (other family, friends or neighbors)</strong> think it is morally appropriate to increase spending on yourself for each of the following periods as a reaction? <br>
-        <div style="display: inline-flex; align-items: center; margin-top: 35px">
-            <label style="margin-right: 10px;">
-                {{ form.react23_yr1.label }}
-            </label>
-            {{ form.react23_yr1 }}
-        </div> <br>
-        {% formfield_errors 'react23_yr1' %}
-
-        <div style="display: inline-flex; align-items: center; margin-top: 30px">
-            <label style="margin-right: 10px;">
-                {{ form.react23_yr2.label }}
-            </label>
-            {{ form.react23_yr2 }}
-        </div> <br>
-        {% formfield_errors 'react23_yr2' %}
-
-        <div style="display: inline-flex; align-items: center; margin-top: 30px">
-            <label style="margin-right: 20px;">
-                {{ form.react23_yr3.label }}
-            </label>
-            {{ form.react23_yr3 }}
-        </div>
-        {% formfield_errors 'react23_yr3' %}
-
-        <div style="margin-top:25px;">
-            Explain briefly why <strong>you/your parents/others</strong> would think increasing
-            your spending in the different periods is or is not appropriate.
-            <br><br>
-            {{ form.react23_why }}
-            {% formfield_errors 'react23_why' %}
-        </div>
-    </div>
-
-    <div style="margin-top: 30px;">
+<div style="margin-top: 30px;">
         {{ next_button }}
     </div>
+
+
 {% if testing %}
     <button id="skipBtn" class="btn btn-secondary px-3" onclick="skipPage()">
-        Skip for testing
-    </button>
+    Skip for testing</button>
 {% endif %}
 {{ endblock }}
-
 
 {{ block scripts }}
 <script>
     const MIN_TEXT_LENGTH = 1;
-
-    const form = document.getElementById('form') || document.querySelector('form');
-    if (form) {
-        form.setAttribute('novalidate', 'novalidate');
-    }
 
     function sendKeylogEvent(fieldName, event, inputElem) {
         liveSend({
@@ -461,74 +369,58 @@
         });
     }
 
-    function isAnyInappropriate(groupPrefix) {
-        return [1, 2, 3].some((idx) => {
-            const field = document.getElementById(`id_${groupPrefix}_yr${idx}-1`);
-            return field ? field.checked : false;
-        });
-    }
-
     function updateNextButtonState() {
-        const react23Why = document.getElementById('id_react23_why');
+        const nextButton = document.querySelector('.otree-btn-next');
+        const react3 = document.getElementById('id_react3');
+        const react4 = document.getElementById('id_react4');
+        const react5 = document.getElementById('id_react5');
 
-        const react21Valid = !isAnyInappropriate('react21') || (react21Why && react21Why.value.trim().length >= MIN_TEXT_LENGTH);
-        const react22Valid = !isAnyInappropriate('react22') || (react22Why && react22Why.value.trim().length >= MIN_TEXT_LENGTH);
-        const react23Valid = !isAnyInappropriate('react23') || (react23Why && react23Why.value.trim().length >= MIN_TEXT_LENGTH);
+        if (!nextButton || !react3 || !react4 || !react5) {
+            return;
+        }
 
-        [
-            ['id_react23_why', react23Valid],
-        ].forEach(([fieldId, isValid]) => {
-            const field = document.getElementById(fieldId);
-            if (!field) {
-                return;
-            }
-            field.classList.toggle('is-invalid', !isValid);
-        });
+        const validLength =
+            react3.value.trim().length >= MIN_TEXT_LENGTH &&
+            react4.value.trim().length >= MIN_TEXT_LENGTH &&
+            react5.value.trim().length >= MIN_TEXT_LENGTH;
+
+        nextButton.disabled = !validLength;
+        nextButton.classList.toggle('disabled', !validLength);
     }
 
-    [
-        'id_react23_why',
-        'id_react21_yr1-1', 'id_react21_yr2-1', 'id_react21_yr3-1',
-        'id_react22_yr1-1', 'id_react22_yr2-1', 'id_react22_yr3-1',
-        'id_react23_yr1-1', 'id_react23_yr2-1', 'id_react23_yr3-1',
-        'id_react21_yr1-2', 'id_react21_yr2-2', 'id_react21_yr3-2',
-        'id_react22_yr1-2', 'id_react22_yr2-2', 'id_react22_yr3-2',
-        'id_react23_yr1-2', 'id_react23_yr2-2', 'id_react23_yr3-2',
-        'id_react21_yr1-3', 'id_react21_yr2-3', 'id_react21_yr3-3',
-        'id_react22_yr1-3', 'id_react22_yr2-3', 'id_react22_yr3-3',
-        'id_react23_yr1-3', 'id_react23_yr2-3', 'id_react23_yr3-3'
-    ].forEach((id) => {
-        const field = document.getElementById(id);
-        if (field) {
-            if (id.includes('_why')) {
-                field.addEventListener('input', (event) => {
-                    const fieldName = id.replace('id_', '');
-                    sendKeylogEvent(fieldName, event, field);
-                    updateNextButtonState();
-                });
-            } else {
-                field.addEventListener('change', updateNextButtonState);
-            }
-        }
-    });
-
+    const react3 = document.getElementById('id_react3');
+    const react4 = document.getElementById('id_react4');
+    const react5 = document.getElementById('id_react5');
+    if (react3) {
+        react3.addEventListener('input', (event) => {
+            sendKeylogEvent('react3', event, react3);
+            updateNextButtonState();
+        });
+    }
+    if (react4) {
+        react4.addEventListener('input', (event) => {
+            sendKeylogEvent('react4', event, react4);
+            updateNextButtonState();
+        });
+    }
+    if (react5) {
+        react5.addEventListener('input', (event) => {
+            sendKeylogEvent('react5', event, react5);
+            updateNextButtonState();
+        });
+    }
     updateNextButtonState();
 
     function skipPage() {
-        document.getElementById('id_react20').value = 'testing';
-        document.getElementById('id_react21_yr1-2').checked = 'True';
-        document.getElementById('id_react21_yr2-2').checked = 'True';
-        document.getElementById('id_react21_yr3-2').checked = 'True';
-
-        document.getElementById('id_react22_yr1-2').checked = 'True';
-        document.getElementById('id_react22_yr2-2').checked = 'True';
-        document.getElementById('id_react22_yr3-2').checked = 'True';
-
-        document.getElementById('id_react23_yr1-2').checked = 'True';
-        document.getElementById('id_react23_yr2-2').checked = 'True';
-        document.getElementById('id_react23_yr3-2').checked = 'True';
-        document.getElementById('id_react23_why').value = 'testing';
+        const skipText = 'Testing mode auto-filled response.';
+        document.getElementById('id_react3').value = skipText;
+        document.getElementById('id_react4').value = skipText;
+        document.getElementById('id_react5').value = skipText;
         updateNextButtonState();
+
+        // document.getElementById('id_react6').value = '0';
+        // document.getElementById('id_react7').value = '0';
+        // document.getElementById('id_react8').value = '0';
     }
 </script>
 {{ endblock }}

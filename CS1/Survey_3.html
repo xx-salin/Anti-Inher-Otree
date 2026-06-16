@@ -1,202 +1,38 @@
-{{ block title }}
-    Introductory survey - 2 (of 3)
-{{ endblock }}
+{% extends "global/Base.html" %}
+{% load otree static %}
 
-{{ block styles }}
-<style>
-    .survey3-intro {
-        margin-bottom: 10px;
-    }
+{% block title %}
+    Introductory survey - 3 (of 3)
+{% endblock %}
 
-    .likert-wrapper {
-        margin-top: 14px;
-        overflow-x: auto;
-    }
-
-    .likert-table {
-        width: 100%;
-        min-width: 760px;
-        border-collapse: collapse;
-        table-layout: fixed;
-    }
-
-    .likert-table thead th {
-        font-size: 0.86rem;
-        font-weight: 600;
-        color: #495057;
-        text-align: center;
-        background: #f8f9fa;
-        border-top: 1px solid #e1e4e8;
-    }
-
-    .likert-table thead th:first-child {
-        text-align: left;
-        background: #ffffff;
-        border-top: none;
-    }
-
-    .likert-table th,
-    .likert-table td {
-        border-bottom: 1px solid #e1e4e8;
-        padding: 10px 8px;
-        vertical-align: middle;
-    }
-
-    .likert-question {
-        width: 46%;
-        text-align: left;
-        font-size: 0.95rem;
-        line-height: 1.3;
-    }
-
-    .likert-option {
-        width: 10.8%;
-        min-width: 90px;
-        text-align: center;
-    }
-
-    .likert-option input[type="radio"] {
-        transform: scale(1.05);
-        margin: 0;
-    }
-
-    .other-factors {
-        margin-top: 16px;
-    }
-
-    .other-factors label {
-        display: block;
-        margin-bottom: 6px;
-        font-weight: 600;
-    }
-
-    #id_Survey3_TextBox {
-        width: 100%;
-        max-width: 560px;
-    }
-
-    @media (max-width: 900px) {
-        .likert-table th,
-        .likert-table td {
-            padding: 8px 6px;
-        }
-
-        .likert-question {
-            font-size: 0.9rem;
-        }
-
-        .likert-table thead th {
-            font-size: 0.78rem;
-        }
-    }
-</style>
-{{ endblock }}
-
-{{ block content }}
-    <div>
-        {% if spend_save == 1 %}
-            <div class="survey3-intro"><strong>How important are the following factors for your decision on how much to spend?</strong></div>
-        {% endif %}
-
-        {% if spend_save == 2 %}
-            <div class="survey3-intro"><strong>How important are the following factors for your decision on how much to save?</strong></div>
-        {% endif %}
-
-        <div class="likert-wrapper">
-            <table class="likert-table">
-                <thead>
-                    <tr>
-                        <th class="likert-question"></th>
-                        <th class="likert-option">Not important</th>
-                        <th class="likert-option">Slightly Important</th>
-                        <th class="likert-option">Moderately Important</th>
-                        <th class="likert-option">Important</th>
-                        <th class="likert-option">Very Important</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in survey3_rows %}
-                        <tr>
-                            <td class="likert-question">
-                                {{ row.label }}
-                                {% formfield_errors row.name %}
-                            </td>
-                            {% for choice_value, choice_label in row.choices %}
-                                <td class="likert-option">
-                                    <input
-                                        type="radio"
-                                        name="{{ row.name }}"
-                                        value="{{ choice_value }}"
-                                        id="id_{{ row.name }}_{{ choice_value }}"
-                                        {% if row.value == choice_value %}checked{% endif %}
-                                    >
-                                </td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-
-            <div class="other-factors">
-                <label for="id_Survey3_TextBox">Please list other relevant factors (if any) here:</label>
-                {{ form.Survey3_TextBox }}
-                {% formfield_errors 'Survey3_TextBox' %}
-            </div>
-        </div>
+{% block content %}
+    <div style="font-size: 16px;"><strong>Please answer the following questions.</strong></div>
+    <div style="margin-top: 30px">
+        {{ formfields }}
     </div>
 
     <div style="margin-top: 30px;">
         {{ next_button }}
     </div>
 
+
 {% if testing %}
-    <br>
-    <button id="skipBtn" class="btn btn-secondary px-3" type="button">
+    <button id="skipBtn" class="btn btn-secondary px-3" onclick="skipPage()">
     Skip for testing</button>
 {% endif %}
 {{ endblock }}
 
 
 {{ block scripts }}
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector("form");
-    const skipBtn = document.getElementById("skipBtn");
-    const textBox = document.getElementById("id_Survey3_TextBox");
-
-    // Names of all required radio-group fields
-    const requiredNames = [
-        'Survey3_DisposableIncome',
-        'Survey3_NetWealth',
-        'Survey3_FutureIncome',
-        'Survey3_RetirementIncome',
-        'Survey3_IrregularPayments',
-        'Survey3_InterestRates',
-        'Survey3_Inflation',
-        'Survey3_CreditAccess',
-        'Survey3_Caution',
-        'Survey3_Impatience'
-    ];
-
-    if (!form) {
-        console.error("Missing form element");
-        return;
-    }
-
-    if (skipBtn) {
-        skipBtn.addEventListener("click", function () {
-            // select last option in each required group
-            requiredNames.forEach(name => {
-                const inputs = document.getElementsByName(name);
-                if (inputs.length) inputs[inputs.length - 1].checked = true;
-            });
-
-            if (textBox) textBox.value = "";
-
-            // then submit
-            form.submit();
-        });
-    }
-});
-</script>
+    <script>
+        function skipPage() {
+            document.getElementById('id_Demographics_Household_Income-3').checked = true;
+            document.getElementById('id_Demographics_LiquidWealth-3').checked = true;
+            document.getElementById('id_Demographics_IlliquidWealth-3').checked = true;
+            document.getElementById('id_Demographics_DebtWealth-3').checked = true;
+            document.getElementById('id_Demographics_LiquidityConstraints_1-3').checked = true;
+            document.getElementById('id_Demographics_LiquidityConstraints_2-3').checked = true;
+            document.getElementById('id_Demographics_LiquidityConstraints_3-3').checked = true;
+        }
+    </script>
 {{ endblock }}

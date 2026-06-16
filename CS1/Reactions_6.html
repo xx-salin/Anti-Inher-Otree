@@ -1,48 +1,6 @@
 {{ block title }}
-    Reactions to the Scenario - (#4, insert title)
+    Reactions to the Scenario - (#6, insert title)
 {{ endblock }}
-
-{{ block styles }}
-<style>
-    .allocation-table {
-        border-collapse: separate;
-        border-spacing: 20px 0;
-    }
-
-    .allocation-table th,
-    .allocation-table td {
-        vertical-align: middle;
-        padding-top: 8px;
-        padding-bottom: 8px;
-    }
-
-    .percent-field {
-        position: relative;
-        display: inline-block;
-    }
-
-    .percent-field input {
-        width: 120px;
-        padding-right: 24px;
-    }
-
-.percent-symbol {
-        position: absolute;
-        right: 8px;
-        top: 50%;
-        transform: translateY(-50%);
-        pointer-events: none;
-        color: #333;
-    }
-
-    .validation-message {
-        color: #a94442;
-        margin-top: 10px;
-        display: none;
-    }
-</style>
-{{ endblock }}
-
 
 
 {{ block content }}
@@ -368,141 +326,17 @@
 
 <br>
 
-<strong>
-    Now consider ways in which you would react to this additional income, compared to the situation without the payment.
-</strong>
-<div>
-    Note that 'spend/spending' refers to expenses for goods (like cars or clothes) and services (like vacations or education), whereas 'save/saving' refers to payments related to investments (e.g., into savings accounts, funds, or other ways to build wealth) and borrowing (like mortgages, credit lines, or other debt).
-</div>
+    <div style="margin-top: 15px;">
+        {{ formfield 'react_uncertainty_timing' }}
+    </div>
 
-<div style="margin-top: 20px;">
-    Please estimate what fraction (in %) of your change in spending would go towards...
-</div>
+    <div style="margin-top: 20px;">
+        {{ formfield 'react_uncertainty_amount' }}
+    </div>
 
-
-
-<table class="allocation-table">
-    <thead>
-        <tr>
-            <th></th>
-            <th>Years 1 and 2</th>
-            <th>Years 3 and 4</th>
-            <th>Rest of your life</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Yourself</td>
-            <td>
-                <div class="percent-field">
-                    {{ form.react_alloc_self_yr1 }}
-                    <span class="percent-symbol">%</span>
-                </div>
-                {% formfield_errors 'react_alloc_self_yr1' %}
-            </td>
-            <td>
-                <div class="percent-field">
-                    {{ form.react_alloc_self_yr2 }}
-                    <span class="percent-symbol">%</span>
-                </div>
-                {% formfield_errors 'react_alloc_self_yr2' %}
-            </td>
-            <td>
-                <div class="percent-field">
-                    {{ form.react_alloc_self_yr3 }}
-                    <span class="percent-symbol">%</span>
-                </div>
-                {% formfield_errors 'react_alloc_self_yr3' %}
-            </td>
-        </tr>
-        <tr>
-            <td>Your parents</td>
-            <td>
-                <div class="percent-field">
-                    {{ form.react_alloc_parents_yr1 }}
-                    <span class="percent-symbol">%</span>
-                </div>
-                {% formfield_errors 'react_alloc_parents_yr1' %}
-            </td>
-            <td>
-                <div class="percent-field">
-                    {{ form.react_alloc_parents_yr2 }}
-                    <span class="percent-symbol">%</span>
-                </div>
-                {% formfield_errors 'react_alloc_parents_yr2' %}
-            </td>
-            <td>
-                <div class="percent-field">
-                    {{ form.react_alloc_parents_yr3 }}
-                    <span class="percent-symbol">%</span>
-                </div>
-                {% formfield_errors 'react_alloc_parents_yr3' %}
-            </td>
-        </tr>
-        <tr>
-            <td>Other family (e.g., children) or friends</td>
-            <td>
-                <div class="percent-field">
-                    {{ form.react_alloc_other_family_yr1 }}
-                    <span class="percent-symbol">%</span>
-                </div>
-                {% formfield_errors 'react_alloc_other_family_yr1' %}
-            </td>
-            <td>
-                <div class="percent-field">
-                    {{ form.react_alloc_other_family_yr2 }}
-                    <span class="percent-symbol">%</span>
-                </div>
-                {% formfield_errors 'react_alloc_other_family_yr2' %}
-            </td>
-            <td>
-                <div class="percent-field">
-                    {{ form.react_alloc_other_family_yr3 }}
-                    <span class="percent-symbol">%</span>
-                </div>
-                {% formfield_errors 'react_alloc_other_family_yr3' %}
-            </td>
-        </tr>
-        <tr>
-            <td>Others (e.g., donations to a charity)</td>
-            <td>
-                <div class="percent-field">
-                    {{ form.react_alloc_others_yr1 }}
-                    <span class="percent-symbol">%</span>
-                </div>
-                {% formfield_errors 'react_alloc_others_yr1' %}
-            </td>
-            <td>
-                <div class="percent-field">
-                    {{ form.react_alloc_others_yr2 }}
-                    <span class="percent-symbol">%</span>
-                </div>
-                {% formfield_errors 'react_alloc_others_yr2' %}
-            </td>
-            <td>
-                <div class="percent-field">
-                    {{ form.react_alloc_others_yr3 }}
-                    <span class="percent-symbol">%</span>
-                </div>
-                {% formfield_errors 'react_alloc_others_yr3' %}
-            </td>
-        </tr>
-        <tr>
-            <td><strong>Total</strong></td>
-            <td><strong id="totalCol1">0.0% (must be 100% to continue)</strong></td>
-            <td><strong id="totalCol2">0.0% (must be 100% to continue)</strong></td>
-            <td><strong id="totalCol3">0.0% (must be 100% to continue)</strong></td>
-        </tr>
-    </tbody>
-</table>
-
-<div id="allocationInputMessage" class="validation-message">
-    Please enter a valid number in each percentage box before continuing.
-</div>
-
-<div style="margin-top: 30px;">
-    {{ next_button }}
-</div>
+    <div style="margin-top: 30px;">
+        {{ next_button }}
+    </div>
 
 {% if testing %}
     <button id="skipBtn" class="btn btn-secondary px-3" onclick="skipPage()">
@@ -513,104 +347,16 @@
 
 {{ block scripts }}
 <script>
-let updateAllocationState = function () {};
+    function skipPage() {
+        const timing = document.getElementById('id_react_uncertainty_timing-3');
+        const amount = document.getElementById('id_react_uncertainty_amount-3');
 
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('form') || document.querySelector('form');
-    if (form) {
-        form.setAttribute('novalidate', 'novalidate');
-    }
-
-    const target = Number('{{ allocation_target }}');
-    const tolerance = Number('{{ allocation_tolerance }}');
-    const inputMessage = document.getElementById('allocationInputMessage');
-
-    const columns = [
-        {
-            totalEl: document.getElementById('totalCol1'),
-            fields: ['id_react_alloc_self_yr1', 'id_react_alloc_parents_yr1', 'id_react_alloc_other_family_yr1', 'id_react_alloc_others_yr1'],
-        },
-        {
-            totalEl: document.getElementById('totalCol2'),
-            fields: ['id_react_alloc_self_yr2', 'id_react_alloc_parents_yr2', 'id_react_alloc_other_family_yr2', 'id_react_alloc_others_yr2'],
-        },
-        {
-            totalEl: document.getElementById('totalCol3'),
-            fields: ['id_react_alloc_self_yr3', 'id_react_alloc_parents_yr3', 'id_react_alloc_other_family_yr3', 'id_react_alloc_others_yr3'],
-        },
-    ];
-
-    const fieldIds = [].concat(columns[0].fields, columns[1].fields, columns[2].fields);
-    const fields = fieldIds
-        .map(function (id) { return document.getElementById(id); })
-        .filter(function (el) { return !!el; });
-
-    fields.forEach(function (field) {
-        field.setAttribute('step', '0.1');
-    });
-
-    function parseFieldValue(field) {
-        const raw = field.value.trim();
-        if (raw === '') return null;
-        const parsed = Number(raw.replace(',', '.'));
-        if (!Number.isFinite(parsed)) return null;
-        return parsed;
-    }
-
-    updateAllocationState = function () {
-        let allInputsNumeric = true;
-
-        columns.forEach(function (column) {
-            let total = 0;
-            let allPresent = true;
-
-            column.fields.forEach(function (id) {
-                const field = document.getElementById(id);
-                const value = field ? parseFieldValue(field) : null;
-                if (value === null) {
-                    allPresent = false;
-                    allInputsNumeric = false;
-                    return;
-                }
-                total += value;
-            });
-
-            const validTotal = allPresent && Math.abs(total - target) <= tolerance;
-
-            if (column.totalEl) {
-                column.totalEl.textContent = total.toFixed(1) + '% (must be 100% to continue)';
-                column.totalEl.style.color = validTotal ? '#1f7a1f' : '#a94442';
-            }
-        });
-
-        if (inputMessage) {
-            inputMessage.style.display = allInputsNumeric ? 'none' : 'block';
+        if (timing) {
+            timing.checked = true;
         }
-    };
-
-    fields.forEach(function (field) {
-        field.addEventListener('input', updateAllocationState);
-    });
-
-    updateAllocationState();
-});
-
-function skipPage() {
-    const values = {
-        id_react_alloc_self_yr1: '70.0', id_react_alloc_self_yr2: '70.0', id_react_alloc_self_yr3: '70.0',
-        id_react_alloc_parents_yr1: '10.0', id_react_alloc_parents_yr2: '10.0', id_react_alloc_parents_yr3: '10.0',
-        id_react_alloc_other_family_yr1: '10.0', id_react_alloc_other_family_yr2: '10.0', id_react_alloc_other_family_yr3: '10.0',
-        id_react_alloc_others_yr1: '10.0', id_react_alloc_others_yr2: '10.0', id_react_alloc_others_yr3: '10.0',
-    };
-
-    Object.keys(values).forEach(function (id) {
-        const field = document.getElementById(id);
-        if (field) field.value = values[id];
-    });
-
-    if (typeof updateAllocationState === 'function') {
-        updateAllocationState();
+        if (amount) {
+            amount.checked = true;
+        }
     }
-}
 </script>
 {{ endblock }}

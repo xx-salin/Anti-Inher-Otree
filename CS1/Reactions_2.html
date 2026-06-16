@@ -1,15 +1,36 @@
 {{ block title }}
-    Reactions to the Scenario - (#1, insert title)
+    Reactions to the Scenario - (#2, insert title)
 {{ endblock }}
 
 {% block styles %}
- <style>
-     .custom-border {
-        border-color: #d6d8db;
+<style>
+    .currency-field {
+        position: relative;
+        display: inline-block; /* So the symbol is inside the same container */
+        margin-right: 10px;    /* Spacing between fields if needed */
     }
- </style>
-{% endblock %}
 
+    .currency-symbol {
+        position: absolute;
+        left: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none; /* Symbol doesn't block typing/clicking */
+        color: #333;
+    }
+
+    .currency-input {
+        padding-left: 20px;
+        width: 100px; /* Adjust as needed */
+    }
+
+    .validation-message {
+        color: #a94442;
+        margin-top: 10px;
+        display: none;
+    }
+</style>
+{% endblock %}
 
 
 {{ block content }}
@@ -331,33 +352,152 @@
 
 </div>
 
+<strong>
+    Now consider ways in which you would react to this additional income, compared to the situation without the payment.
+</strong>
+<div>
+    Note that 'spend/spending' refers to expenses for goods (like cars or clothes) and services (like vacations or education), whereas 'save/saving' refers to payments related to investments (e.g., into savings accounts, funds, or other ways to build wealth) and borrowing (like mortgages, credit lines, or other debt).
+</div>
 
-<br>
+<div style="margin-top: 20px;">
+    How much would you change your total spending for each of the time periods below as a reaction to the scenario? <br>
+</div>
+<div style="margin-top: 5px;">
+    Note: If the scenario would make you spend more in a given period, please type a positive amount.
+    Conversely, type a negative amount if the scenario would make you spend less.
+    Type zero (0) if the scenario would not affect your spending in a given period.
+</div>
 
-    <strong>
-        Now consider ways in which you would react to this additional income, compared to the situation without the payment.
-        </strong>
-    <div>
-        Note that 'spend/spending' refers to expenses for goods (like cars or clothes) and services (like vacations or education), whereas 'save/saving' refers to payments related to investments (e.g., into savings accounts, funds, or other ways to build wealth) and borrowing (like mortgages, credit lines, or other debt).
-    </div>
-    <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 20px">
-    {{ formfields }}
-         </div>
+<!-- YEAR 1 -->
+<div style="display: flex; align-items: center; margin-top: 15px;">
+    <label for="id_react_yr1" style="margin-right: 10px;">
+        Year 1 from now:
+    </label>
+    {{ form.react_yr1 }}
+</div>
+{% formfield_errors 'react_yr1' %}
+
+<!-- YEAR 2 -->
+<div style="display: flex; align-items: center; margin-top: 15px;">
+    <label for="id_react_yr2" style="margin-right: 10px;">
+        Year 2 from now:
+    </label>
+    {{ form.react_yr2 }}
+</div>
+{% formfield_errors 'react_yr2' %}
+
+<!-- YEAR 3 -->
+<div style="display: flex; align-items: center; margin-top: 15px;">
+    <label for="id_react_yr3" style="margin-right: 10px;">
+        Year 3 from now:
+    </label>
+    {{ form.react_yr3 }}
+</div>
+{% formfield_errors 'react_yr3' %}
+
+<!-- YEAR 4 -->
+<div style="display: flex; align-items: center; margin-top: 15px;">
+    <label for="id_react_yr4" style="margin-right: 10px;">
+        Year 4 from now:
+    </label>
+    {{ form.react_yr4 }}
+</div>
+{% formfield_errors 'react_yr4' %}
+
+<!-- AFTER YEAR 4 / Rest of your life -->
+<div style="display: flex; align-items: center; margin-top: 15px;">
+    <label for="id_react_yr5" style="margin-right: 10px;">
+        Rest of your life:
+    </label>
+    {{ form.react_yr5 }}
+</div>
+{% formfield_errors 'react_yr5' %}
+
+<div id="fieldRangeMessage" class="validation-message">
+    Each spending textbox must contain a number from -5000 to +50000.
+    Please change any entries outside this range before continuing.
+</div>
+
+<div id="totalLimitMessage" class="validation-message">
+    Your total change in spending sums up to more than £75 000, i.e., much more than the payment you receive.
+    Please change your responses to stay below a total change of £30 000 in spending.
+</div>
 
 <div style="margin-top: 30px;">
-        {{ next_button }}
-    </div>
-
+    {{ next_button }}
+</div>
 
 {% if testing %}
     <button id="skipBtn" class="btn btn-secondary px-3" onclick="skipPage()">
-    Skip for testing</button>
+        Skip for testing
+    </button>
 {% endif %}
-{{ endblock }}
 
-{{ block scripts }}
+<!-- Warning Modal -->
+<div id="warningModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999;">
+    <div style="background:white; margin:15% auto; padding:30px; width:50%; border-radius:8px; position:relative;">
+        <p id="warningText" style="color:#a94442; font-weight:bold;"></p>
+        <div style="margin-top:20px;">
+            <button type="button" onclick="dismissWarning()" class="btn btn-secondary">Go back and review</button>
+            <button type="button" onclick="proceedAnyway()" class="btn btn-primary" style="margin-left:10px;">Proceed anyway</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
 <script>
-    const MIN_TEXT_LENGTH = 1;
+    const MIN_SPEND = -5000;
+    const MAX_SPEND = 50000;
+    const MAX_TOTAL = 75000;
+    const PAYMENT_AMOUNT = 50000;
+
+    let allowSubmit = false;
+
+    const form = document.getElementById('form') || document.querySelector('form');
+    if (form) {
+        form.setAttribute('novalidate', 'novalidate');
+        form.addEventListener('submit', function(e) {
+            if (allowSubmit) return;
+
+            const total = getTotal();
+            const zero = allZero();
+
+            let warningNeeded = false;
+            let message = '';
+
+            if (zero) {
+                warningNeeded = true;
+                message = 'You state that the payment will not affect your spending at any point in your life. ' +
+                    'Note that this implies you intend to either reduce your salary (e.g., by working less) ' +
+                    'as a reaction to the payment, or leave the payment (and any interest on it) as an inheritance.';
+            } else if (total > 0 && total < PAYMENT_AMOUNT) {
+                warningNeeded = true;
+                const shortfall = PAYMENT_AMOUNT - total;
+                message = `You intend to increase spending by £${shortfall.toLocaleString()} less than the amount of the payment. ` +
+                    'Note that this implies you intend to either reduce your salary (e.g., by working less) ' +
+                    'as a reaction to the payment, or leave the payment (and any interest on it) as an inheritance.';
+            }
+
+            if (warningNeeded) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                document.getElementById('warningText').innerText = message;
+                document.getElementById('warningModal').style.display = 'block';
+            }
+        });
+    }
+
+    function dismissWarning() {
+        document.getElementById('warningModal').style.display = 'none';
+    }
+
+    function proceedAnyway() {
+        allowSubmit = true;
+        document.getElementById('warningModal').style.display = 'none';
+        document.querySelector('.otree-btn-next').click();
+    }
 
     function sendKeylogEvent(fieldName, event, inputElem) {
         liveSend({
@@ -369,58 +509,83 @@
         });
     }
 
+    function parseNumericValue(inputElem) {
+        const raw = inputElem.value.trim();
+        if (raw === '') return null;
+        const parsed = Number(raw);
+        if (!Number.isFinite(parsed)) return null;
+        return parsed;
+    }
+
+    function getTotal() {
+        let total = 0;
+        fields.forEach(function (fieldName) {
+            const inputElem = document.getElementById(`id_${fieldName}`);
+            if (!inputElem) return;
+            const value = parseNumericValue(inputElem);
+            if (value !== null) total += value;
+        });
+        return total;
+    }
+
+    function allZero() {
+        return fields.every(function (fieldName) {
+            const inputElem = document.getElementById(`id_${fieldName}`);
+            if (!inputElem) return true;
+            const value = parseNumericValue(inputElem);
+            return value === null || value === 0;
+        });
+    }
+
     function updateNextButtonState() {
-        const nextButton = document.querySelector('.otree-btn-next');
-        const react3 = document.getElementById('id_react3');
-        const react4 = document.getElementById('id_react4');
-        const react5 = document.getElementById('id_react5');
+        const rangeMessage = document.getElementById('fieldRangeMessage');
+        const totalMessage = document.getElementById('totalLimitMessage');
 
-        if (!nextButton || !react3 || !react4 || !react5) {
-            return;
-        }
+        let total = 0;
+        let allPresent = true;
+        let outOfRange = false;
 
-        const validLength =
-            react3.value.trim().length >= MIN_TEXT_LENGTH &&
-            react4.value.trim().length >= MIN_TEXT_LENGTH &&
-            react5.value.trim().length >= MIN_TEXT_LENGTH;
-
-        nextButton.disabled = !validLength;
-        nextButton.classList.toggle('disabled', !validLength);
-    }
-
-    const react3 = document.getElementById('id_react3');
-    const react4 = document.getElementById('id_react4');
-    const react5 = document.getElementById('id_react5');
-    if (react3) {
-        react3.addEventListener('input', (event) => {
-            sendKeylogEvent('react3', event, react3);
-            updateNextButtonState();
+        fields.forEach(function (fieldName) {
+            const inputElem = document.getElementById(`id_${fieldName}`);
+            if (!inputElem) { allPresent = false; return; }
+            const value = parseNumericValue(inputElem);
+            if (value === null) { allPresent = false; return; }
+            if (value < MIN_SPEND || value > MAX_SPEND) outOfRange = true;
+            total += value;
         });
+
+        if (rangeMessage) rangeMessage.style.display = outOfRange ? 'block' : 'none';
+        const totalTooHigh = allPresent && !outOfRange && total > MAX_TOTAL;
+        if (totalMessage) totalMessage.style.display = totalTooHigh ? 'block' : 'none';
     }
-    if (react4) {
-        react4.addEventListener('input', (event) => {
-            sendKeylogEvent('react4', event, react4);
-            updateNextButtonState();
-        });
-    }
-    if (react5) {
-        react5.addEventListener('input', (event) => {
-            sendKeylogEvent('react5', event, react5);
-            updateNextButtonState();
-        });
-    }
+
+    let fields = ['react_yr1', 'react_yr2', 'react_yr3', 'react_yr4', 'react_yr5'];
+
+    fields.forEach(field => {
+        let inputSelector = `#id_${field}`;
+        $(inputSelector).wrap('<div class="currency-field"></div>');
+        $(inputSelector).addClass('currency-input');
+        $(inputSelector).attr('min', MIN_SPEND);
+        $(inputSelector).attr('max', MAX_SPEND);
+        $(inputSelector).attr('step', '1');
+        $('<span class="currency-symbol">{{ C.DEFAULT_CURRENCY_SYMBOL }}</span>').insertBefore(inputSelector);
+    });
+
+    fields.forEach(function (fieldName) {
+        const inputElem = document.getElementById(`id_${fieldName}`);
+        if (inputElem) inputElem.addEventListener('input', updateNextButtonState);
+    });
     updateNextButtonState();
 
     function skipPage() {
-        const skipText = 'Testing mode auto-filled response.';
-        document.getElementById('id_react3').value = skipText;
-        document.getElementById('id_react4').value = skipText;
-        document.getElementById('id_react5').value = skipText;
+        document.getElementById('id_react_yr1').value = '0';
+        document.getElementById('id_react_yr2').value = '0';
+        document.getElementById('id_react_yr3').value = '0';
+        document.getElementById('id_react_yr4').value = '0';
+        document.getElementById('id_react_yr5').value = '0';
+        allowSubmit = true;
         updateNextButtonState();
-
-        // document.getElementById('id_react6').value = '0';
-        // document.getElementById('id_react7').value = '0';
-        // document.getElementById('id_react8').value = '0';
     }
 </script>
-{{ endblock }}
+{% endblock %}
+
