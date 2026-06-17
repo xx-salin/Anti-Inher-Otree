@@ -88,8 +88,6 @@ class Player(BasePlayer):
     reactions2_keylog = models.LongStringField(initial='{}')
     reactions3_keylog = models.LongStringField(initial='{}')
     reactions6_keylog = models.LongStringField(initial='{}')
-    reactions7_keylog = models.LongStringField(initial='{}')
-    keylog_timing_summary = models.LongStringField(initial='{}')
     keylog_timing_tuples = models.LongStringField(initial='')
     checks = models.IntegerField(initial=2)
 
