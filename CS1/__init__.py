@@ -14,7 +14,7 @@ emotional affection have on consumption.
 This survey asks questions from participants of the survey in three sections: 
 Firstly, it asks all participants the same basic information questions.
 Secondly, it divides participants into 8 groups with different questions. 
-8 groups consist of [Now, Future] * [No emotional attachment, Big emotional attachment] * [Certain, Uncertain]
+8 groups consist of [Now, Future] * [No emotional attachment, Large emotional attachment] * [Certain, Uncertain] * [Additional Info, No Additional Info]
 Thirdly, it moves all participants back to the same main group where each participant has 
 the same questions in randomized order.
 """
@@ -51,14 +51,13 @@ class Subsession(BaseSubsession):
 class Group(BaseGroup):
     pass
 
-
 class Player(BasePlayer):
     # CREATING SESSION -
     assigned_group = models.StringField()
     prolific_id = models.StringField(blank=True, label='Your Prolific ID')
     spend_save = models.IntegerField(initial=0)  # spend = 1, save = 2
     future_present = models.IntegerField()  # future = 1, present = 2
-    emotional_attachment = models.IntegerField(initial=0)  # tax (low) = 1, parent (high) = 2
+    emotional_attachment = models.IntegerField(initial=0)  # tax (no attachment) = 1, parent (large attachment) = 2
     uncertainty = models.IntegerField(initial=0) # uncertainty = 1, certainty = 2
     scenario_info = models.BooleanField()
     info_subtype = models.StringField(initial='0')  # disposable income = '5', net worth = '6', borrowing = '7', example all combo '567', none = '0' 
@@ -315,9 +314,6 @@ class Player(BasePlayer):
         label = "Please list other relevant factors (if any) here:",
         blank=True)
     
-
-
-    
     # Survey 3 (Pre-Dem):
     Demographics_Household_Income = models.IntegerField(
         label='Which of the following best describes your total household income last year?',
@@ -347,7 +343,6 @@ class Player(BasePlayer):
             [6, f"{C.DEFAULT_CURRENCY_SYMBOL}25,000 or more"],
             [7, "Prefer not to say"]
         ])
-
 
     Demographics_IlliquidWealth = models.IntegerField(
         label='How much other wealth do you own (e.g., value of your home, other real estate you own, or other non-financial assets)?',
@@ -455,12 +450,10 @@ class Player(BasePlayer):
     comp_failed_attempts = models.IntegerField(initial=0)
     comp_wrong_history = models.LongStringField(initial='')
 
-
     
     # ------------------------------------------------------------------------------------------------------------
     # --------------------------------------------- REACTIONS --------------------------------------------
     # ------------------------------------------------------------------------------------------------------------
-
 
     # Reactions_1
     react3 = models.LongStringField(
@@ -498,7 +491,6 @@ class Player(BasePlayer):
     react_yr5 = models.IntegerField(
         label='Total rest of your life:', min=C.REACTION_SPEND_MIN, max=C.REACTION_SPEND_MAX, blank=False)
 
-
     # Reactions_2_Followup_B
     react9 = models.LongStringField(
         label='Please explain briefly why you would adjust your spending like this over the upcoming years:', blank=True)
@@ -527,8 +519,6 @@ class Player(BasePlayer):
     react_nondurable_services_yr2 = models.FloatField(min=None, blank=False)
     react_nondurable_services_yr3 = models.FloatField(min=None, blanok=False)
 
-
-
     # Reactions_4
     react_alloc_self_yr1 = models.FloatField(label='yourself', min=0, max=100, blank=False)
     react_alloc_self_yr2 = models.FloatField(min=0, max=100, blank=False)
@@ -545,8 +535,6 @@ class Player(BasePlayer):
     react_alloc_others_yr1 = models.FloatField(label='others (e.g., donations to a charity)', min=0, max=100, blank=False)
     react_alloc_others_yr2 = models.FloatField(min=0, max=100, blank=False)
     react_alloc_others_yr3 = models.FloatField(min=0, max=100, blank=False)
-
-
 
     # Reactions_5
     react20 = models.LongStringField(
@@ -620,8 +608,6 @@ class Player(BasePlayer):
     react23_why = models.LongStringField(
         label='Explain briefly why you/your parents/others would think increasing spending on yourself in the different periods is (not) appropriate.', blank=False
     )
-
-
 
     # Reactions_6
     react_uncertainty_timing = models.IntegerField(
@@ -701,7 +687,6 @@ class Player(BasePlayer):
 
     Demographics_FatherInheritance = models.IntegerField(
         label=f"How much do you expect to inherit from your father (in {C.DEFAULT_CURRENCY_SYMBOL})? Please enter the approximate value of the inheritance if your father has passed away already, or 42 if you do not know / do not want to respond.", min=0, max=100_000_000, blank=True)
-
 
     # Demographics 2
     Demographics_RiskAversion = models.IntegerField(
@@ -860,7 +845,6 @@ class Player(BasePlayer):
             [4, "Prefer not to say"]]
     )
 
-
     # Concluding survey inheritance follow-up
     inh_followup_effect = models.IntegerField(blank=True)
     inh_followup_effect_order = models.StringField(blank=True)
@@ -875,7 +859,6 @@ class Player(BasePlayer):
     inh_followup_reason_vii = models.IntegerField(blank=True, min=1, max=5, label='I worry that my parent would reduce my inheritance if I spent some of it in advance')
     inh_followup_reason_other = models.LongStringField(blank=True, label='Other reason. Please specify:')
     inh_followup_reason_order = models.StringField(blank=True)
-
 
     # Feedback
     OpenFeedback = models.LongStringField(
@@ -1163,19 +1146,11 @@ def creating_session(subsession: Subsession):
             player.participant.vars['assigned_group'] = assigned_group
             player.assigned_group = assigned_group
 
-            player.future_present = 1 if player.assigned_group in ['FU_LAR_C', 'FU_NO_C', 'FU_LAR_U', 'FU_NO_U','FU_LAR_C_I', 'FU_NO_C_I', 'FU_LAR_U_I', 'FU_NO_U_I'] else 2
-
-            if player.assigned_group in ['FU_LAR_C', 'PR_LAR_C', 'FU_LAR_U', 'PR_LAR_U', 'FU_LAR_C_I', 'PR_LAR_C_I', 'FU_LAR_U_I', 'PR_LAR_U_I']:
-                player.emotional_attachment = 2
-            elif player.assigned_group in ['FU_NO_C', 'PR_NO_C', 'FU_NO_U', 'PR_NO_U', 'FU_NO_C_I', 'PR_NO_C_I', 'FU_NO_U_I', 'PR_NO_U_I']:
-                player.emotional_attachment = 1
-        
-            if player.assigned_group in ['FU_LAR_C', 'FU_NO_C', 'PR_LAR_C', 'PR_NO_C', 'FU_LAR_C_I', 'FU_NO_C_I', 'PR_LAR_C_I', 'PR_NO_C_I']:
-                player.uncertainty = 2
-            elif player.assigned_group in ['FU_LAR_U', 'FU_NO_U', 'PR_LAR_U', 'PR_NO_U', 'FU_LAR_U_I', 'FU_NO_U_I', 'PR_LAR_U_I', 'PR_NO_U_I']:
-                player.uncertainty = 1
-
-            player.scenario_info = True if player.assigned_group in ['FU_LAR_C_I', 'FU_NO_C_I', 'PR_LAR_C_I', 'PR_NO_C_I', 'FU_LAR_U_I', 'FU_NO_U_I', 'PR_LAR_U_I', 'PR_NO_U_I'] else False
+            parts = assigned_group.split('_')
+            player.future_present = 1 if parts[0] == 'FU' else 2
+            player.emotional_attachment = 2 if parts[1] == 'LAR' else 1
+            player.uncertainty = 2 if parts[2] == 'C' else 1
+            player.scenario_info = parts[-1] == 'I'
 
         for p in subsession.get_players():
             # BOT SCREENING RELATED
@@ -1458,7 +1433,6 @@ class AttentionCheck4_AI(Page):
     form_fields = ['cafewall']
 
 
-
 class AttentionCheckResult(Page):
     @staticmethod
     def is_displayed(player: Player):
@@ -1611,6 +1585,7 @@ def get_timeline_vars(player: Player):
     
     return payment_position,payment_label
 
+
 class FU_LAR_C(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
@@ -1634,6 +1609,7 @@ class FU_LAR_C(Page):
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
         player.mother_father = player.participant.vars['variation']
+
 
 class FU_LAR_U(Page):
     form_model = 'player'
@@ -1659,6 +1635,7 @@ class FU_LAR_U(Page):
     def before_next_page(player: Player, timeout_happened):
         player.mother_father = player.participant.vars['variation']
 
+
 class FU_NO_C(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
@@ -1673,7 +1650,8 @@ class FU_NO_C(Page):
                 'payment_position':payment_position,
                 'payment_label': payment_label,
                 'arrow_left_percent': payment_position*25}
-    
+
+
 class FU_NO_U(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
@@ -1688,6 +1666,7 @@ class FU_NO_U(Page):
                 'payment_position':payment_position,
                 'payment_label': payment_label,
                 'arrow_left_percent': payment_position*25}
+
 
 class PR_LAR_C(Page):
     form_model = 'player'
@@ -1712,6 +1691,7 @@ class PR_LAR_C(Page):
     def before_next_page(player: Player, timeout_happened):
         player.mother_father = player.participant.vars['variation']
 
+
 class PR_LAR_U(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
@@ -1735,6 +1715,7 @@ class PR_LAR_U(Page):
     def before_next_page(player: Player, timeout_happened):
         player.mother_father = player.participant.vars['variation']
 
+
 class PR_NO_C(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
@@ -1749,7 +1730,8 @@ class PR_NO_C(Page):
                 'payment_position':payment_position,
                 'payment_label': payment_label,
                 'arrow_left_percent': payment_position*25}
-    
+
+
 class PR_NO_U(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
@@ -1792,6 +1774,7 @@ class FU_LAR_C_I(Page):
     def before_next_page(player: Player, timeout_happened):
         player.mother_father = player.participant.vars['variation']
 
+
 class FU_LAR_U_I(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
@@ -1817,6 +1800,7 @@ class FU_LAR_U_I(Page):
     def before_next_page(player: Player, timeout_happened):
         player.mother_father = player.participant.vars['variation']
 
+
 class FU_NO_C_I(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
@@ -1833,7 +1817,8 @@ class FU_NO_C_I(Page):
                 'payment_position':payment_position,
                 'payment_label': payment_label,
                 'arrow_left_percent': payment_position*25}
-    
+
+
 class FU_NO_U_I(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
@@ -1850,6 +1835,7 @@ class FU_NO_U_I(Page):
                 'payment_position':payment_position,
                 'payment_label': payment_label,
                 'arrow_left_percent': payment_position*25}
+
 
 class PR_LAR_C_I(Page):
     form_model = 'player'
@@ -1899,6 +1885,7 @@ class PR_LAR_U_I(Page):
     def before_next_page(player: Player, timeout_happened):
         player.mother_father = player.participant.vars['variation']
 
+
 class PR_NO_C_I(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
@@ -1917,6 +1904,7 @@ class PR_NO_C_I(Page):
                 'arrow_left_percent': payment_position*25
                 }
 
+
 class PR_NO_U_I(Page):
     form_model = 'player'
     form_fields = ['scenario_warning']
@@ -1934,6 +1922,7 @@ class PR_NO_U_I(Page):
                 'payment_label': payment_label,
                 'arrow_left_percent': payment_position*25
                 }
+
 
 class ComprehensionTest(Page):
     form_model = 'player'
@@ -1996,7 +1985,6 @@ class ComprehensionTest(Page):
 # --------------------------------------------- REACTIONS --------------------------------------------
 # ------------------------------------------------------------------------------------------------------------
 
-
 class Reactions_1(Page):
     form_model = 'player'
     form_fields = ['react3', 'react4', 'react5']
@@ -2026,6 +2014,7 @@ class Reactions_1(Page):
     @staticmethod
     def live_method(player: Player, data):
         _append_keylog_event(player, 'reactions2_keylog', data)
+
 
 class Reactions_2(Page):
     form_model = 'player'
@@ -2078,8 +2067,6 @@ class Reactions_2(Page):
         _append_keylog_event(player, 'reactions3_keylog', data)
 
 
-##
-
 class Reactions_2_Followup_B(Page):
     form_model = 'player'
     form_fields = ['react9']
@@ -2128,8 +2115,6 @@ class Reactions_2_Followup_B(Page):
         return errors if errors else None
 
 
-
-
 class Reactions_2_Followup_A1(Page):
     form_model = 'player'
     form_fields = ['react_followup1']
@@ -2171,7 +2156,6 @@ class Reactions_2_Followup_A1(Page):
         if not values.get('react_followup1') or len(values.get('react_followup1', '').strip()) < 1:
             errors['react_followup1'] = 'This field is required.'
         return errors if errors else None
-
 
 
 class Reactions_2_Followup_A2(Page):
@@ -2277,7 +2261,6 @@ class Reactions_2_Followup_A2(Page):
         return errors if errors else None
     
 
-
 class Reactions_3(Page):
     form_model = 'player'
     form_fields = [
@@ -2371,7 +2354,6 @@ class Reactions_3(Page):
         return errors if errors else None
 
 
-
 class Reactions_4(Page):
     form_model = 'player'
     form_fields = [
@@ -2442,7 +2424,6 @@ class Reactions_4(Page):
     def is_displayed(player: Player):
         fields = [player.react_yr1, player.react_yr2, player.react_yr3, player.react_yr4, player.react_yr5]
         return not all(f is f == 0 for f in fields)
-
 
 
 class Reactions_5(Page):
@@ -2552,7 +2533,6 @@ class Demographics_1(Page):
     def vars_for_template(player: Player):
         return {'testing': player.session.config["testing"]}
     
-##
 
 class Inh_Followup_A(Page):
     form_model = 'player'
@@ -2715,7 +2695,6 @@ class Inh_Followup_D(Page):
                 errors[field] = 'This field is required.'
         return errors if errors else None
 
-##
 
 class Demographics_2(Page):
     form_model = 'player'
@@ -2763,6 +2742,8 @@ class LinkToProlific(Page):
 class testing(Page):
     form_model = 'player'
 
+#XX
+
 page_sequence = [
     Instructions_WelcomeScreen, LeavePage,
 
@@ -2786,4 +2767,3 @@ page_sequence = [
     Demographics_1, Inh_Followup_A, Inh_Followup_B, Inh_Followup_C, Inh_Followup_D, Demographics_2, Demographics_3,
 
     Feedback, LinkToProlific]
-
