@@ -36,9 +36,6 @@ class C(BaseConstants):
     # Change DEFAULT_CURRENCY if looking to change the currency of the experiment.
     DEFAULT_CURRENCY = 'GBP' # ADJUST THIS ONE
     DEFAULT_CURRENCY_SYMBOL = CURRENCIES[DEFAULT_CURRENCY]
-    # Bot Screening
-    SAMPLE_FRUITS = ['C', 'R', 'Z', 'V', 'Y', 'N', 'R', 'P']
-    SAMPLE_IAMX = [1, 2, 3]
 
 
 RECAPTCHA_VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify'
@@ -95,21 +92,7 @@ class Player(BasePlayer):
     keylog_timing_summary = models.LongStringField(initial='{}')
     keylog_timing_tuples = models.LongStringField(initial='')
     checks = models.IntegerField(initial=2)
-    honolulu = models.StringField(
-        label='Please type the word above into the space below:', max_length=8)
-    fruit = models.StringField(initial='blank')
-    answer_fruit = models.StringField(label='', max_length=1)
-    iamx1 = models.IntegerField(initial=0)
-    iamx2 = models.IntegerField(initial=0)
-    iamx3 = models.IntegerField(initial=0)
-    answer_iamx = models.IntegerField(
-        label='Which of the sentences above most accurately describes you?',
-        choices=[1, 2, 3],
-        widget=widgets.RadioSelect,)
-    answer_her = models.IntegerField(
-        label='',
-        choices=[[1, "Tatyana's mother"], [2, "Grandma"], [3, "Tatyana"]],
-        widget=widgets.RadioSelect,)
+
     # Leave Page
     isLeaving = models.BooleanField(choices=((True, 'leaving'), (False, 'notleaving')),
                                     initial=0)
@@ -298,18 +281,7 @@ class Player(BasePlayer):
             [5, 'Very Important']
         ]
     )
-    survey2_Other = models.IntegerField(
-        label="Other (please list below in the text box)",
-        widget=widgets.RadioSelect,
-        blank=True,
-        choices=[
-            [1, 'Not important'],
-            [2, 'Slightly Important'],
-            [3, 'Moderately Important'],
-            [4, 'Important'],
-            [5, 'Very Important']
-        ]
-    )
+
     survey2_TextBox = models.StringField(
         label = "Please list other relevant factors (if any) here:",
         blank=True)
@@ -768,7 +740,7 @@ class Player(BasePlayer):
             [5, 'Strongly agree'],
         ])
 
-    # Demographics 3:
+    # Demographics 3
     interest_rate_inflation = models.IntegerField(
         label='Imagine that the interest rate on your savings account was 1% per year and inflation was 2% per year. After 1 year, would you be able to buy:',
         widget=widgets.RadioSelect,
@@ -1152,14 +1124,6 @@ def creating_session(subsession: Subsession):
             player.uncertainty = 2 if parts[2] == 'C' else 1
             player.scenario_info = parts[-1] == 'I'
 
-        for p in subsession.get_players():
-            # BOT SCREENING RELATED
-            p.fruit = random.choice(C.SAMPLE_FRUITS)
-            order_images = C.SAMPLE_IAMX.copy()
-            random.shuffle(order_images)
-            p.iamx1 = order_images[0]
-            p.iamx2 = order_images[1]
-            p.iamx3 = order_images[2]
 
 # ------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------ PAGES --------------------------------------------
@@ -1248,110 +1212,6 @@ class BotScreening(Page):
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
         player.recaptcha_response = ''
-
-
-class AttentionCheck1(Page):
-    @staticmethod
-    def is_displayed(player: Player):
-        return not player.session.config["testing"]
-
-    @staticmethod
-    def before_next_page(player: Player, timeout_happened):
-        answer1 = player.honolulu
-        if answer1.upper() == "HONOLULU":
-            player.attention1 = 1
-        else:
-            player.attention1 = 0
-
-    form_model = 'player'
-    form_fields = ['honolulu']
-
-class AttentionCheck2(Page):
-    @staticmethod
-    def is_displayed(player: Player):
-        return not player.session.config["testing"]
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        fruitletter = dict(
-            dict(
-                zip(
-                    ['C', 'R', 'Z', 'V', 'Y', 'N', 'R', 'P'],
-                    [
-                        'apple',
-                        'strawberry',
-                        'mango',
-                        'raspberry',
-                        'blueberry',
-                        'blackberry',
-                        'avocado',
-                        'tangerine',
-                    ],
-                )
-            )
-        )
-        for i in fruitletter:
-            if player.fruit == i:
-                return {'fruit': fruitletter.get(i)}
-
-    @staticmethod
-    def before_next_page(player: Player, timeout_happened):
-        if player.fruit == player.answer_fruit.upper():
-            player.attention2 = 1
-        else:
-            player.attention2 = 0
-
-    form_model = 'player'
-    form_fields = ['answer_fruit']
-
-
-class AttentionCheck3(Page):
-    @staticmethod
-    def is_displayed(player: Player):
-        return not player.session.config["testing"]
-    
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        images = dict(
-            dict(zip(['human', 'lion', 'rabbit'], [player.iamx1, player.iamx2, player.iamx3]))
-        )
-        return {'images': images}
-
-    @staticmethod
-    def before_next_page(player: Player, timeout_happened):
-        if player.iamx1 == player.answer_iamx:
-            player.attention3 = 1
-        else:
-            player.attention3 = 0
-
-    form_model = 'player'
-    form_fields = ['answer_iamx']
-
-
-class AttentionCheck4(Page):
-    @staticmethod
-    def is_displayed(player: Player):
-        return not player.session.config["testing"]
-
-    @staticmethod
-    def before_next_page(player: Player, timeout_happened):
-        if player.answer_her == 1:
-            player.attention4 = 1
-        else:
-            player.attention4 = 0
-        if (
-            player.attention1 == 1
-            and player.attention2 == 1
-            and player.attention3 == 1
-            and player.attention4 == 1
-        ):
-            player.checks = 1
-        else:
-            player.checks = 0
-
-    form_model = 'player'
-    form_fields = ['answer_her']
 
 class AttentionCheck1_AI(Page):
     def is_displayed(player):
