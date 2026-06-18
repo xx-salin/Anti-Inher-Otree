@@ -48,7 +48,7 @@ from playwright.sync_api import sync_playwright
 
 
 # ===========================================================================
-#   CHANGE THIS ONE LINE TO SWITCH PERSONA  ★
+# ★  CHANGE THIS ONE LINE TO SWITCH PERSONA  ★
 # ===========================================================================
 ACTIVE_PERSONA = "A"   # "A", "B", or "C"
 # ===========================================================================
@@ -224,34 +224,39 @@ RADIO_VALUES_BASE = {
 # Persona-specific overrides
 # ---------------------------------------------------------------------------
 
-# Persona A — spender: positive spend, qualifies for Inh_Followup
+# Persona A — spender: spend totalling £30 000 (< £50 000 payment)
+# → triggers "spending less than payment" warning modal on Reactions_2
+# → positive in all years → Reactions_3/4/5/6 + Followup_B + Inh_Followup chain
 PERSONA_A = {
     "number": {
-        "Demographics_Mother":          "65",
-        "Demographics_Father":          "68",
+        "Demographics_Mother":           "65",
+        "Demographics_Father":           "68",
         "Demographics_MotherInheritance":"50000",
         "Demographics_FatherInheritance":"50000",
         "react_yr1": "5000",
         "react_yr2": "5000",
-        "react_yr3": "10000",
-        "react_yr4": "10000",
-        "react_yr5": "20000",
+        "react_yr3": "5000",
+        "react_yr4": "5000",
+        "react_yr5": "10000",   # total = £30 000 → sub-£50k modal fires
     },
-    "blank": [],   # fields to leave empty
+    "blank": [],
 }
 
-# Persona B — zero pre-receipt: yr1/2 = 0, yr3+ positive, qualifies for Inh_Followup
+# Persona B — zero pre-receipt: yr1/2 = 0, yr3+ positive, total = £30 000
+# → triggers sub-£50k modal on Reactions_2 (same modal variant as A)
+# → zero pre-receipt → Reactions_2_Followup_A1 + A2
+# → qualifies for Inh_Followup chain
 PERSONA_B = {
     "number": {
-        "Demographics_Mother":          "65",
-        "Demographics_Father":          "68",
+        "Demographics_Mother":           "65",
+        "Demographics_Father":           "68",
         "Demographics_MotherInheritance":"50000",
         "Demographics_FatherInheritance":"50000",
         "react_yr1": "0",
         "react_yr2": "0",
-        "react_yr3": "15000",
-        "react_yr4": "15000",
-        "react_yr5": "20000",
+        "react_yr3": "10000",
+        "react_yr4": "10000",
+        "react_yr5": "10000",   # total = £30 000 → sub-£50k modal fires
     },
     "blank": [],
 }
@@ -276,9 +281,9 @@ PERSONA_C = {
 PERSONAS = {"A": PERSONA_A, "B": PERSONA_B, "C": PERSONA_C}
 
 PERSONA_DESCRIPTIONS = {
-    "A": "spender — positive spend all years, Inh_Followup qualified",
-    "B": "zero-pre — zero yr1/2, positive yr3+, Inh_Followup qualified",
-    "C": "all-zero — zeros everywhere, no inheritance, skips all branches",
+    "A": "spender £30k (sub-£50k modal) — positive all years, Inh_Followup qualified",
+    "B": "zero-pre £30k (sub-£50k modal) — zero yr1/2, positive yr3+, Inh_Followup qualified",
+    "C": "all-zero (zero-spend modal) — zeros everywhere, no inheritance, skips branches",
 }
 
 
@@ -764,6 +769,7 @@ def run_participant(
             continue
 
         # --- Normal pages: standard oTree Next button ---
+        # Also handles Reactions_2's #warningModal which fires on form submit.
         btn = next_button_locator(page)
         if btn is None:
             break
@@ -772,10 +778,28 @@ def run_participant(
 
         url_before = page.url
         try:
-            with page.expect_navigation(wait_until="domcontentloaded", timeout=15000):
+            with page.expect_navigation(wait_until="domcontentloaded", timeout=5000):
                 btn.click()
         except PlaywrightTimeoutError:
-            if page.url == url_before:
+            # Navigation didn't happen — check if warningModal appeared (Reactions_2)
+            modal = page.locator("#warningModal")
+            if page.url == url_before and modal.is_visible():
+                # Screenshot the page with the modal open
+                modal_file = f"{len(seen_labels):03d}_{plabel}_warning_modal.png"
+                modal_target = out_dir / folder_label / modal_file
+                modal_target.parent.mkdir(parents=True, exist_ok=True)
+                capture_page(page, modal_target)
+
+                # Click "Proceed anyway" → sets allowSubmit=true, clicks next button
+                url_before2 = page.url
+                try:
+                    with page.expect_navigation(wait_until="domcontentloaded", timeout=15000):
+                        page.locator("button[onclick='proceedAnyway()']").click()
+                except PlaywrightTimeoutError:
+                    if page.url == url_before2:
+                        force_advance_form(page)
+            elif page.url == url_before:
+                # Some other reason navigation didn't happen — retry
                 try:
                     btn.click()
                     page.wait_for_url(lambda u: u != url_before, timeout=5000)
