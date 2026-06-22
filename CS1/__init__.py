@@ -459,7 +459,7 @@ class Player(BasePlayer):
         label='Year 4 from now:', min=C.REACTION_SPEND_MIN, max=C.REACTION_SPEND_MAX, blank=False)
 
     react_yr5 = models.IntegerField(
-        label='Total rest of your life:', min=C.REACTION_SPEND_MIN, max=C.REACTION_SPEND_MAX, blank=False)
+        label='Rest of your life (total):', min=C.REACTION_SPEND_MIN, max=C.REACTION_SPEND_MAX, blank=False)
 
     # Reactions_2_Followup_B
     react9 = models.LongStringField(
