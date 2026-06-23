@@ -1047,6 +1047,7 @@ def _get_scenario_reminder_text(player: Player):
     if player.scenario_info:
         base_info = (
             "Many people don't think about future income or cash they'll receive later when deciding how much to spend now. "
+            'This applies both to irregular future income (like above) and regular future income (like salaries).'
             'However, your ability to spend today depends not just on your current income, wealth, and debt, '
             'but also on the money you expect to receive in the future. '
             'If you anticipate future income, you can choose to spend some of it now by dipping into your savings, '
