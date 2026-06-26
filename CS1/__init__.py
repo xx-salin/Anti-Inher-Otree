@@ -461,6 +461,13 @@ class Player(BasePlayer):
     react_yr5 = models.IntegerField(
         label='Rest of your life (total):', min=C.REACTION_SPEND_MIN, max=C.REACTION_SPEND_MAX, blank=False)
 
+
+    react_yr1_initial = models.IntegerField(blank=True)
+    react_yr2_initial = models.IntegerField(blank=True)
+    react_yr3_initial = models.IntegerField(blank=True)
+    react_yr4_initial = models.IntegerField(blank=True)
+    react_yr5_initial = models.IntegerField(blank=True)
+
     # Reactions_2_Followup_B
     react9 = models.LongStringField(
         label='Please explain briefly why you would adjust your spending like this over the upcoming years:', blank=True)
@@ -1923,8 +1930,21 @@ class Reactions_2(Page):
 
     @staticmethod
     def live_method(player: Player, data):
-        _append_keylog_event(player, 'reactions3_keylog', data)
+        if data.get('type') == 'initial_values':
+            player.react_yr1_initial = data.get('yr1')
+            player.react_yr2_initial = data.get('yr2')
+            player.react_yr3_initial = data.get('yr3')
+            player.react_yr4_initial = data.get('yr4')
+            player.react_yr5_initial = data.get('yr5')
+        else:
+            _append_keylog_event(player, 'reactions3_keylog', data)
 
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        for field in ['react_yr1', 'react_yr2', 'react_yr3', 'react_yr4', 'react_yr5']:
+            initial_field = field + '_initial'
+            if player.field_maybe_none(initial_field) is None:
+                setattr(player, initial_field, player.field_maybe_none(field))
 
 class Reactions_2_Followup_B(Page):
     form_model = 'player'

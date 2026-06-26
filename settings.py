@@ -12,7 +12,7 @@ SESSION_CONFIGS = [
     {
         'name': 'CS1',
         'display_name': 'CS1',
-        'num_demo_participants': 32,
+        'num_demo_participants': 41,
         'app_sequence': ['CS1'],
         'testing': True,
     }]

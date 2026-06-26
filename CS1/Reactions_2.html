@@ -464,6 +464,7 @@
     const PAYMENT_AMOUNT = 50000;
 
     let allowSubmit = false;
+    let initialValuesSent = false;
 
     const form = document.getElementById('form') || document.querySelector('form');
     if (form) {
@@ -491,6 +492,17 @@
             }
 
             if (warningNeeded) {
+                if (!initialValuesSent) {
+                    liveSend({
+                        type: 'initial_values',
+                        yr1: parseInt(document.getElementById('id_react_yr1').value) || 0,
+                        yr2: parseInt(document.getElementById('id_react_yr2').value) || 0,
+                        yr3: parseInt(document.getElementById('id_react_yr3').value) || 0,
+                        yr4: parseInt(document.getElementById('id_react_yr4').value) || 0,
+                        yr5: parseInt(document.getElementById('id_react_yr5').value) || 0,
+                    });
+                    initialValuesSent = true;
+                }
                 e.preventDefault();
                 e.stopImmediatePropagation();
                 document.getElementById('warningText').innerText = message;
