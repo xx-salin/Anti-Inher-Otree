@@ -109,7 +109,7 @@ class Player(BasePlayer):
     survey1_save = models.IntegerField(
         label = "What percentage of your disposable income (your income after taxes) do you save in an average month?",
         min=0, max=100, blank=False)
-
+    
     survey2_DisposableIncome = models.IntegerField(
         label="Your disposable income now",
         widget=widgets.RadioSelect,
@@ -119,8 +119,10 @@ class Player(BasePlayer):
             [3, 'Moderately Important'],
             [4, 'Important'],
             [5, 'Very Important']
-        ]
+        ],
+        blank=True
     )
+
     survey2_NetWealth = models.IntegerField(
         label="Your current net wealth (your wealth minus any debt, e.g., credit card debt or mortgages)",
         widget=widgets.RadioSelect,
@@ -130,20 +132,10 @@ class Player(BasePlayer):
             [3, 'Moderately Important'],
             [4, 'Important'],
             [5, 'Very Important']
-        ]
+        ],
+        blank=True
     )
-    """
-    survey2_UncertaintyOfNetWealth = models.IntegerField(
-        label="Uncertainty about the future value of your net wealth (e.g., due to changes in housing or stock prices)",
-        widget=widgets.RadioSelect,
-        choices=[
-            [1, 'Not important'],
-            [2, 'Slightly Important'],
-            [3, 'Moderately Important'],
-            [4, 'Important'],
-            [5, 'Very Important']
-        ]
-    ) """
+
     survey2_FutureIncome = models.IntegerField(
         label="Your expected regular future income until retirement (e.g., from your job).",
         widget=widgets.RadioSelect,
@@ -153,20 +145,9 @@ class Player(BasePlayer):
             [3, 'Moderately Important'],
             [4, 'Important'],
             [5, 'Very Important']
-        ]
+        ],
+        blank=True
     )
-    """
-    survey2_UncertaintyOfFutureIncome = models.IntegerField(
-        label="Uncertainty about your regular future income until retirement (e.g. because of unemployment)",
-        widget=widgets.RadioSelect,
-        choices=[
-            [1, 'Not important'],
-            [2, 'Slightly Important'],
-            [3, 'Moderately Important'],
-            [4, 'Important'],
-            [5, 'Very Important']
-        ]
-    ) """
     survey2_RetirementIncome = models.IntegerField(
         label="Your expected regular income after retirement (e.g., from pensions and your retirement savings).",
         widget=widgets.RadioSelect,
@@ -176,20 +157,9 @@ class Player(BasePlayer):
             [3, 'Moderately Important'],
             [4, 'Important'],
             [5, 'Very Important']
-        ]
+        ],
+        blank=True
     )
-    """
-    survey2_UncertaintyOfRetirementIncome = models.IntegerField(
-        label="Uncertainty about your income after retirement (e.g. because of political uncertainty and risky investment returns)",
-        widget=widgets.RadioSelect,
-        choices=[
-            [1, 'Not important'],
-            [2, 'Slightly Important'],
-            [3, 'Moderately Important'],
-            [4, 'Important'],
-            [5, 'Very Important']
-        ]
-    ) """
     survey2_IrregularPayments = models.IntegerField(
         label="Expected gifts, inheritances, and irregular payments from others.",
         widget=widgets.RadioSelect,
@@ -199,19 +169,9 @@ class Player(BasePlayer):
             [3, 'Moderately Important'],
             [4, 'Important'],
             [5, 'Very Important']
-        ]
+        ],
+        blank=True
     )
-    """ survey2_UncertaintyOfIrregularPayments = models.IntegerField(
-        label="Uncertainty about expected irregular payments from others (e.g. gifts or inheritances)",
-        widget=widgets.RadioSelect,
-        choices=[
-            [1, 'Not important'],
-            [2, 'Slightly Important'],
-            [3, 'Moderately Important'],
-            [4, 'Important'],
-            [5, 'Very Important']
-        ]
-    ) """
     survey2_InterestRates = models.IntegerField(
         label="Interest rates or the return on savings (including stocks and changes in housing prices).",
         widget=widgets.RadioSelect,
@@ -221,20 +181,9 @@ class Player(BasePlayer):
             [3, 'Moderately Important'],
             [4, 'Important'],
             [5, 'Very Important']
-        ]
+        ],
+        blank=True
     )
-    """
-    survey2_UncertaintyOfInterestRates = models.IntegerField(
-        label="Uncertainty about interest rates or returns",
-        widget=widgets.RadioSelect,
-        choices=[
-            [1, 'Not important'],
-            [2, 'Slightly Important'],
-            [3, 'Moderately Important'],
-            [4, 'Important'],
-            [5, 'Very Important']
-        ]
-    ) """
     survey2_Inflation = models.IntegerField(
         label="Inflation",
         widget=widgets.RadioSelect,
@@ -244,7 +193,8 @@ class Player(BasePlayer):
             [3, 'Moderately Important'],
             [4, 'Important'],
             [5, 'Very Important']
-        ]
+        ],
+        blank=True
     )
     survey2_CreditAccess = models.IntegerField(
         label="Your ability to access credit (if needed)",
@@ -255,7 +205,8 @@ class Player(BasePlayer):
             [3, 'Moderately Important'],
             [4, 'Important'],
             [5, 'Very Important']
-        ]
+        ],
+        blank=True
     )
     survey2_Caution = models.IntegerField(
         label="Caution (preference to avoid risk)",
@@ -266,7 +217,8 @@ class Player(BasePlayer):
             [3, 'Moderately Important'],
             [4, 'Important'],
             [5, 'Very Important']
-        ]
+        ],
+        blank=True
     )
     survey2_Impatience = models.IntegerField(
         label="Impatience (preference to spend more now rather than later)",
@@ -277,12 +229,14 @@ class Player(BasePlayer):
             [3, 'Moderately Important'],
             [4, 'Important'],
             [5, 'Very Important']
-        ]
+        ],
+        blank=True
     )
 
     survey2_TextBox = models.StringField(
-        label = "Please list other relevant factors (if any) here:",
+        label="Please list other relevant factors (if any) here:",
         blank=True)
+
     
     # Survey 3 (Pre-Dem):
     Demographics_Household_Income = models.IntegerField(
@@ -1358,10 +1312,13 @@ class Survey_2(Page):
 
         # Randomize the order of the fields, excluding textbox
         static_fields = ['survey2_TextBox']
-        randomized_fields = random.sample(
-            [field for field in Survey_2.form_fields if field not in static_fields],
-            len(Survey_2.form_fields) - len(static_fields))
-        player.participant.vars['randomized_fields'] = randomized_fields
+        if 'randomized_fields' not in player.participant.vars:
+            randomized_fields = random.sample(
+                [field for field in Survey_2.form_fields if field not in static_fields],
+                len(Survey_2.form_fields) - len(static_fields))
+            player.participant.vars['randomized_fields'] = randomized_fields
+        else:
+            randomized_fields = player.participant.vars['randomized_fields']
 
         survey2_labels = {
             'survey2_DisposableIncome': "Your disposable income now",
@@ -1398,8 +1355,26 @@ class Survey_2(Page):
                 'testing': player.session.config["testing"]}
 
     @staticmethod
+    def error_message(player: Player, values):
+        for field in ['survey2_DisposableIncome', 'survey2_NetWealth', 'survey2_FutureIncome',
+                      'survey2_RetirementIncome', 'survey2_IrregularPayments', 'survey2_InterestRates',
+                      'survey2_Inflation', 'survey2_CreditAccess', 'survey2_Caution', 'survey2_Impatience']:
+            val = values.get(field)
+            if val is not None:
+                setattr(player, field, val)
+        errors = {}
+        for field in ['survey2_DisposableIncome', 'survey2_NetWealth', 'survey2_FutureIncome',
+                      'survey2_RetirementIncome', 'survey2_IrregularPayments', 'survey2_InterestRates',
+                      'survey2_Inflation', 'survey2_CreditAccess', 'survey2_Caution', 'survey2_Impatience']:
+            if values.get(field) is None:
+                errors[field] = 'This field is required.'
+        return errors if errors else None
+
+    @staticmethod
     def before_next_page(player: Player, timeout_happened):
         player.survey2_fieldorder = ', '.join(player.participant.vars['randomized_fields'])
+
+    
 
 
 class Survey_3(Page):
