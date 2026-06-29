@@ -427,7 +427,7 @@ class Player(BasePlayer):
         label='Please explain briefly why you would adjust your spending like this over the upcoming years:', blank=True)
     
     # Reactions_2_Follow-up_A1
-    react_followup1 = models.LongStringField(blank=True, label='You expressed that the future payment does not affect your spending plans before you receive the payment but that you will increase spending after the payment. Briefly explain why.')
+    react_followup1 = models.LongStringField(blank=True, label='You expressed that the future payment affects your spending plans mostly after you receive the payment, not before. Briefly explain why.')
 
     # Reactions_2_Follow-up_A2
     react_followup2_i = models.IntegerField(blank=True, min=1, max=5, label='I keep future payments such as this one in a different budget than the budget that I use to determine my current spending')
@@ -1931,16 +1931,18 @@ class Reactions_2_Followup_B(Page):
             (player.field_maybe_none(f) or 0) == 0
             for f in ['react_yr1', 'react_yr2', 'react_yr3', 'react_yr4', 'react_yr5']
         )
+
         case1 = (
             player.future_present == 1 and
-            (player.react_yr1 == 0 or player.react_yr1 is None) and
-            (player.react_yr2 == 0 or player.react_yr2 is None) and
             (
-                (player.react_yr3 is not None and player.react_yr3 != 0) or
-                (player.react_yr4 is not None and player.react_yr4 != 0) or
-                (player.react_yr5 is not None and player.react_yr5 != 0)
+                (player.field_maybe_none('react_yr1') or 0) +
+                (player.field_maybe_none('react_yr2') or 0)
+            ) < 0.5 * (
+                (player.field_maybe_none('react_yr3') or 0) +
+                (player.field_maybe_none('react_yr4') or 0)
             )
         )
+
         return not case1 and not all_zero
     
     @staticmethod
@@ -1977,12 +1979,12 @@ class Reactions_2_Followup_A1(Page):
     def is_displayed(player: Player):
         return (
             player.future_present == 1 and
-            (player.react_yr1 == 0 or player.react_yr1 is None) and
-            (player.react_yr2 == 0 or player.react_yr2 is None) and
             (
-                (player.react_yr3 is not None and player.react_yr3 != 0) or
-                (player.react_yr4 is not None and player.react_yr4 != 0) or
-                (player.react_yr5 is not None and player.react_yr5 != 0)
+                (player.field_maybe_none('react_yr1') or 0) +
+                (player.field_maybe_none('react_yr2') or 0)
+            ) < 0.5 * (
+                (player.field_maybe_none('react_yr3') or 0) +
+                (player.field_maybe_none('react_yr4') or 0)
             )
         )
 
@@ -2028,12 +2030,12 @@ class Reactions_2_Followup_A2(Page):
     def is_displayed(player: Player):
         return (
             player.future_present == 1 and
-            (player.react_yr1 == 0 or player.react_yr1 is None) and
-            (player.react_yr2 == 0 or player.react_yr2 is None) and
             (
-                (player.react_yr3 is not None and player.react_yr3 != 0) or
-                (player.react_yr4 is not None and player.react_yr4 != 0) or
-                (player.react_yr5 is not None and player.react_yr5 != 0)
+                (player.field_maybe_none('react_yr1') or 0) +
+                (player.field_maybe_none('react_yr2') or 0)
+            ) < 0.5 * (
+                (player.field_maybe_none('react_yr3') or 0) +
+                (player.field_maybe_none('react_yr4') or 0)
             )
         )
 
