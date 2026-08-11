@@ -2180,11 +2180,6 @@ class Reactions_3(Page):
 
         if errors:
             return errors
-        
-    @staticmethod
-    def is_displayed(player: Player):
-        fields = [player.react_yr1, player.react_yr2, player.react_yr3, player.react_yr4, player.react_yr5]
-        return not all(f is f == 0 for f in fields)             
 
         tolerance = C.ALLOCATION_TOLERANCE_PCT
         target = C.ALLOCATION_TARGET_PCT
@@ -2208,6 +2203,11 @@ class Reactions_3(Page):
                     errors[field] = message
 
         return errors if errors else None
+
+    @staticmethod
+    def is_displayed(player: Player):
+        fields = [player.react_yr1, player.react_yr2, player.react_yr3, player.react_yr4, player.react_yr5]
+        return not all(f is f == 0 for f in fields)
 
 
 class Reactions_4(Page):
