@@ -2040,12 +2040,6 @@ class Reactions_2_Followup_A2(Page):
         )
 
     @staticmethod
-    def before_next_page(player: Player, timeout_happened):
-        reasons = ['i', 'ii', 'iii', 'iv', 'v', 'vi']
-        random.shuffle(reasons)
-        player.react_followup2_order = ','.join(reasons)
-
-    @staticmethod
     def vars_for_template(player: Player):
         reasons = ['i', 'ii', 'iii', 'iv', 'v', 'vi']
         payment_position, payment_label = get_timeline_vars(player)
@@ -2484,12 +2478,6 @@ class Inh_Followup_D(Page):
             player.field_maybe_none('inh_followup_effect') == 2 and
             player.field_maybe_none('inh_followup_thought') == 2
         )
-
-    @staticmethod
-    def before_next_page(player: Player, timeout_happened):
-        reasons = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii']
-        random.shuffle(reasons)
-        player.inh_followup_reason_order = ','.join(reasons)
 
     @staticmethod
     def vars_for_template(player: Player):
