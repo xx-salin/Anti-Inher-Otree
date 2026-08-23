@@ -448,7 +448,10 @@ class Player(BasePlayer):
     react_nondurable_services_yr1 = models.FloatField(
         label='Non-durable goods and services that do not last for a long time (e.g., food, clothes, vacation, etc.):', min=None, blank=False)
     react_nondurable_services_yr2 = models.FloatField(min=None, blank=False)
-    react_nondurable_services_yr3 = models.FloatField(min=None, blanok=False)
+    react_nondurable_services_yr3 = models.FloatField(min=None, blank=False)
+
+    # Randomized display order of the durable vs. non-durable rows shown on Reactions_3
+    reac3_order_dur_nondur = models.StringField(blank=True)
 
     # Reactions_4
     react_alloc_self_yr1 = models.FloatField(label='yourself', min=0, max=100, blank=False)
@@ -2137,6 +2140,9 @@ class Reactions_3(Page):
             player.participant.vars['react5_row_order'] = row_order
         else:
             row_order = list(row_order)
+
+        # Record the randomized row order on the player so it is exported in the oTree data.
+        player.reac3_order_dur_nondur = ', '.join(row_order)
 
         return {'testing': player.session.config["testing"],
                 'group': player.participant.vars['assigned_group'],
