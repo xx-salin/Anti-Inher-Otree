@@ -92,6 +92,15 @@
             <br>
             {% include "CS1/partials/timeline.html" %}
         </div>
+
+        {% if scenario_info_text %}
+            <div class="info-box">
+                {{ scenario_info_text }}
+                {% if scenario_info_personal_text %}
+                    <br><br>{{ scenario_info_personal_text }}
+                {% endif %}
+            </div>
+        {% endif %}
     {% endif %}
     
 

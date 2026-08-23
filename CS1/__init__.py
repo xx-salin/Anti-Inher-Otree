@@ -982,13 +982,13 @@ def _get_scenario_reminder_text(player: Player):
     else:
         if player.future_present == 1:
             scenario_text = (
-                'Suppose that today you learn that the government has discovered an error in your taxes that concerns multiple tax years. '
+                'Suppose that today you learn that the government has discovered an error in your taxes that concerns multiple years. '
                 f'You receive a {C.DEFAULT_CURRENCY_SYMBOL}50 000 refund in 2 years. '
                 'This is a one-time payment you had not expected until today.'
             )
         else:
             scenario_text = (
-                'Suppose that today you learn that the government has discovered an error in your taxes that concerns multiple tax years. '
+                'Suppose that today you learn that the government has discovered an error in your taxes that concerns multiple years. '
                 f'You receive a {C.DEFAULT_CURRENCY_SYMBOL}50 000 refund today. '
                 'This is a one-time payment you had not expected until today.'
             )
@@ -1005,24 +1005,26 @@ def _get_scenario_reminder_text(player: Player):
 
 
     info_text = ''
+    info_personal_text = ''
     if player.scenario_info:
-        base_info = (
+        info_text = (
             "Many people don't think about future income or cash they'll receive later when deciding how much to spend now. "
-            'This applies both to irregular future income (like above) and regular future income (like salaries).'
+            'This applies both to irregular future income (like the above) and regular future income (like salaries). '
             'However, your ability to spend today depends not just on your current income, wealth, and debt, '
             'but also on the money you expect to receive in the future. '
             'If you anticipate future income, you can choose to spend some of it now by dipping into your savings, '
             'saving less than usual, or borrowing (for example, using a credit card or a line of credit).'
         )
 
-        subtype = player.info_subtype
+        subtype = player.field_maybe_none('info_subtype') or ''
+        borrowing_part = 'borrowing money (e.g., using consumer credit)'
         ability_parts = []
         if '5' in subtype:
             ability_parts.append('your disposable income')
         if '6' in subtype:
             ability_parts.append('your net wealth (e.g., savings invested in bank accounts or stocks)')
         if '7' in subtype:
-            ability_parts.append('borrowing money (e.g., using consumer credit)')
+            ability_parts.append(borrowing_part)
 
         if ability_parts:
             if len(ability_parts) == 1:
@@ -1031,15 +1033,14 @@ def _get_scenario_reminder_text(player: Player):
                 ability_text = f'{ability_parts[0]} and {ability_parts[1]}'
             else:
                 ability_text = f'{ability_parts[0]}, {ability_parts[1]} and {ability_parts[2]}'
-            personal_sentence = (
-                f'You stated that you would be able to spend more today by using {ability_text}. '
+            # 'borrowing money ...' alone reads 'by borrowing money ...' in the scenario templates
+            lead_in = 'by ' if ability_parts[0] == borrowing_part else 'by using '
+            info_personal_text = (
+                f'You stated that you would be able to spend more today {lead_in}{ability_text}. '
                 'That means you can increase today\'s spending in anticipation of future income if you like.'
             )
-            info_text = base_info + ' ' + personal_sentence
-        else:
-            info_text = base_info
 
-    return scenario_text, info_text
+    return scenario_text, info_text, info_personal_text
 
 
 
@@ -1777,7 +1778,7 @@ class ComprehensionTest(Page):
     def vars_for_template(player: Player):
         failed_attempts, wrong_history = _ensure_comprehension_tracking(player)
         payment_position, payment_label = get_timeline_vars(player)
-        scenario_text, info_text = _get_scenario_reminder_text(player)
+        scenario_text, info_text, info_personal_text = _get_scenario_reminder_text(player)
 
         return {
             'testing': player.session.config["testing"],
@@ -1786,6 +1787,7 @@ class ComprehensionTest(Page):
             'wrong_history': wrong_history,
             'scenario_text': scenario_text,
             'scenario_info_text': info_text,
+            'scenario_info_personal_text': info_personal_text,
             'expected_q1': 2 if player.future_present == 1 else 1,
             'expected_q3': 3 if player.emotional_attachment == 1 else 2,
             'payment_position': payment_position,
