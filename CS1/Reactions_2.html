@@ -286,13 +286,13 @@
 {% formfield_errors 'react_yr5' %}
 
 <div id="fieldRangeMessage" class="validation-message">
-    Each spending textbox must contain a number from -5000 to +50000.
+    Each spending textbox must contain a number from {{ C.REACTION_SPEND_MIN }} to +{{ C.REACTION_SPEND_MAX }}.
     Please change any entries outside this range before continuing.
 </div>
 
 <div id="totalLimitMessage" class="validation-message">
-    Your total change in spending sums up to more than £75 000, i.e., much more than the payment you receive.
-    Please change your responses to stay below a total change of £30 000 in spending.
+    Your total change in spending sums up to more than {{ C.DEFAULT_CURRENCY_SYMBOL }}{{ C.REACTION_SPEND_TOTAL_MAX }}, i.e., much more than the payment you receive.
+    Please change your responses to stay below a total change of {{ C.DEFAULT_CURRENCY_SYMBOL }}{{ C.REACTION_SPEND_TOTAL_MAX }} in spending.
 </div>
 
 <div style="margin-top: 30px;">
@@ -320,9 +320,9 @@
 
 {% block scripts %}
 <script>
-    const MIN_SPEND = -5000;
-    const MAX_SPEND = 50000;
-    const MAX_TOTAL = 75000;
+    const MIN_SPEND = {{ C.REACTION_SPEND_MIN }};
+    const MAX_SPEND = {{ C.REACTION_SPEND_MAX }};
+    const MAX_TOTAL = {{ C.REACTION_SPEND_TOTAL_MAX }};
     const PAYMENT_AMOUNT = 50000;
 
     let allowSubmit = false;

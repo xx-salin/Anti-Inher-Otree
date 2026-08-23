@@ -1899,9 +1899,9 @@ class Reactions_2(Page):
 
         if not errors and total is not None and total > C.REACTION_SPEND_TOTAL_MAX:
             total_msg = (
-                'Your total change in spending sums up to more than £75 000, '
+                f'Your total change in spending sums up to more than {C.DEFAULT_CURRENCY_SYMBOL}{C.REACTION_SPEND_TOTAL_MAX}, '
                 'i.e., much more than the payment you receive. '
-                'Please change your responses to stay below a total change of £75 000 in spending.'
+                f'Please change your responses to stay below a total change of {C.DEFAULT_CURRENCY_SYMBOL}{C.REACTION_SPEND_TOTAL_MAX} in spending.'
             )
             for field in total_fields:
                 errors[field] = total_msg
