@@ -1938,11 +1938,8 @@ class Reactions_2_Followup_B(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        all_zero = all(
-            (player.field_maybe_none(f) or 0) == 0
-            for f in ['react_yr1', 'react_yr2', 'react_yr3', 'react_yr4', 'react_yr5']
-        )
-
+        # Shown whenever the A1/A2 follow-up branch (case1) does not apply.
+        # This includes the all-zero case: those participants see this page and then skip Reactions_3 and Reactions_4.
         case1 = (
             player.future_present == 1 and
             (
@@ -1954,7 +1951,7 @@ class Reactions_2_Followup_B(Page):
             )
         )
 
-        return not case1 and not all_zero
+        return not case1
     
     @staticmethod
     def vars_for_template(player: Player):
