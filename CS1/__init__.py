@@ -1932,26 +1932,37 @@ class Reactions_2(Page):
             if player.field_maybe_none(initial_field) is None:
                 setattr(player, initial_field, player.field_maybe_none(field))
 
+def _reactions2_backloaded(player: Player):
+    """True when the spending change is concentrated after the payment is
+    received (Years 3-4) rather than before it (Years 1-2). This is the
+    condition that routes future-payment participants to Followup A1/A2.
+
+    Magnitudes are compared so the check still works when reactions are
+    negative (planned spending reductions): what matters is where the bulk
+    of the *change* sits, not its sign. When there is no Year 3-4 change,
+    it is never treated as back-loaded (so an early-only change, including
+    all-zero - goes to Followup B instead).
+    """
+    before = (
+        (player.field_maybe_none('react_yr1') or 0) +
+        (player.field_maybe_none('react_yr2') or 0)
+    )
+    after = (
+        (player.field_maybe_none('react_yr3') or 0) +
+        (player.field_maybe_none('react_yr4') or 0)
+    )
+    return player.future_present == 1 and abs(before) < 0.5 * abs(after)
+
+
 class Reactions_2_Followup_B(Page):
     form_model = 'player'
     form_fields = ['react9']
 
     @staticmethod
     def is_displayed(player: Player):
-        # Shown whenever the A1/A2 follow-up branch (case1) does not apply.
+        # Shown whenever the A1/A2 follow-up branch does not apply.
         # This includes the all-zero case: those participants see this page and then skip Reactions_3 and Reactions_4.
-        case1 = (
-            player.future_present == 1 and
-            (
-                (player.field_maybe_none('react_yr1') or 0) +
-                (player.field_maybe_none('react_yr2') or 0)
-            ) < 0.5 * (
-                (player.field_maybe_none('react_yr3') or 0) +
-                (player.field_maybe_none('react_yr4') or 0)
-            )
-        )
-
-        return not case1
+        return not _reactions2_backloaded(player)
     
     @staticmethod
     def vars_for_template(player: Player):
@@ -1985,16 +1996,7 @@ class Reactions_2_Followup_A1(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        return (
-            player.future_present == 1 and
-            (
-                (player.field_maybe_none('react_yr1') or 0) +
-                (player.field_maybe_none('react_yr2') or 0)
-            ) < 0.5 * (
-                (player.field_maybe_none('react_yr3') or 0) +
-                (player.field_maybe_none('react_yr4') or 0)
-            )
-        )
+        return _reactions2_backloaded(player)
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -2036,16 +2038,7 @@ class Reactions_2_Followup_A2(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        return (
-            player.future_present == 1 and
-            (
-                (player.field_maybe_none('react_yr1') or 0) +
-                (player.field_maybe_none('react_yr2') or 0)
-            ) < 0.5 * (
-                (player.field_maybe_none('react_yr3') or 0) +
-                (player.field_maybe_none('react_yr4') or 0)
-            )
-        )
+        return _reactions2_backloaded(player)
 
     @staticmethod
     def vars_for_template(player: Player):
