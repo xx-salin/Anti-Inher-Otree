@@ -1783,11 +1783,17 @@ class ComprehensionTest(Page):
         payment_position, payment_label = get_timeline_vars(player)
         scenario_text, info_text, info_personal_text = _get_scenario_reminder_text(player)
 
+        if 'variation' not in player.participant.vars:
+            player.participant.vars['variation'] = 'Not Set'
+
         return {
             'testing': player.session.config["testing"],
             'show_retry_reminder': failed_attempts > 0,
             'failed_attempts': failed_attempts,
             'wrong_history': wrong_history,
+            'group': player.participant.vars['assigned_group'],
+            'variation': player.participant.vars['variation'],
+            'info_subtype': player.info_subtype,
             'scenario_text': scenario_text,
             'scenario_info_text': info_text,
             'scenario_info_personal_text': info_personal_text,
